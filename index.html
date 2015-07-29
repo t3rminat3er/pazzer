@@ -83,7 +83,7 @@
                     <span class="currentPoints" id="player1CurrentPoints">{{localPlayer.total}}</span>
                 </div>
             </div>
-            <div class="player2HandCardsBox">
+            <div {{bind-attr class=":player2HandCardsBox opponentPlayer.turn::disabled"}}>
                 <div class="playerCharacter" id="player2Character"><img src="img/characters/chewbaccaDog.png" width="100%" /></div>
                 {{#each opponentPlayer.handDeck as |card|}}
                 <cards {{ action 'playHandCard' card}} class="handCards" id="player1HandCard1">{{card.value}}</cards>
@@ -120,7 +120,7 @@
                 <input type="button" name="hold" value="Hold" /><br />
                 <input type="button" name="give_up" value="Give Up" />
             </div>
-            <div class="player1HandCardsBox">
+            <div {{bind-attr class=":player1HandCardsBox localPlayer.turn::disabled"}} >
                 <div class="playerCharacter" id="player1Character"><img src="img/characters/stormtrooper.png" width="100%" /></div>
                 
                 {{#each localPlayer.handDeck as |card|}}
