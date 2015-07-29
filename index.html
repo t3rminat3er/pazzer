@@ -1,0 +1,153 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+<head>
+    <title>PAZAAK ARENA - THE GAME - Login</title>
+    <meta charset="UTF-8" />
+    <meta name="author" content="Laurin Schnell - Michael Wax" />
+    <meta name="description" content="PAZAAK ARENA - THE GAME - Login" />
+    <meta name="keywords" content="pazaak, pazaak arena, pazaak game, pazaak card game, pazaak star wars, star wars" />
+    <link rel="stylesheet" href="style/style.css" />
+</head>
+<body>
+    <!--LOGIN-->
+    <script type="text/x-handlebars" data-template-name="login">
+        <form class="loginBox" id="loginBox" {{action "login" on="submit"}}>
+            <p>
+                <img src="img/layout/layerEmail.png" alt="E-Mail" /><br />
+                {{input value=username type="text" class="textfieldLogin" id="email"}}
+                <!--<input type="text" name="email" id="email" class="textfieldLogin">-->
+            </p>
+            <br /><br />
+            <p>
+                <img src="img/layout/layerPassword.png" alt="Password" /><br />
+                {{input value=password type="password" id="password" class="textfieldLogin"}}
+
+            </p>
+            <p>
+                <input type="submit" class="button" id="loginButton" text="" />
+                <button {{action 'guestlogin'}} type="button" class="button" id="loginAsGuestButton" />
+            </p>
+            <a href="">Forgot your password?</a>
+            <input type="button" class="button" id="loginCreateAccount" value="CREATE NEW ACCOUNT" />
+        </form>
+
+    </script>
+
+    <!--LOBBY-->
+    <script type="text/x-handlebars" data-template-name="lobby">
+        <div class="lobbyBox">
+            <h1>Welcome to Cantina {{username}}</h1>
+            <div class="gameNameBox">
+                <h2>GAMENAME</h2>
+                <ul id="matches">
+                    {{#each hostedMatches as |match|}}
+                    {{#link-to 'match' match.id}}
+                    <li class="gameNameLink">
+                        <a href="">
+                            <label>{{match.title}}</label>
+                        </a>
+                    </li>
+                    {{/link-to}}
+                    {{/each}}
+                </ul>
+            </div>
+            <div class="playerNameBox">
+                <h2>PLAYERNAME</h2>
+                <ul id="players">
+                    {{#each onlinePlayers as |player|}}
+                    <li class="playerName">
+                        <span class="playerName" id="playerName1">{{player.name}}</span><br />
+                    </li>
+                    {{/each}}
+                </ul>
+
+            </div>
+            <button class="lobbyButton">REFRESH</button>
+            <button class="lobbyButton">CREATE GAME</button>
+            <button class="lobbyButton">DECK EDITOR</button>
+            <button class="lobbyButton">LOGOUT</button>
+        </div>
+    </script>
+    <!--MATCH-->
+<script type="text/x-handlebars" data-template-name="match">
+        <div class="inGameBox">
+            <div class="playerInformationsBox">
+                <div class="playerInformations" id="player2Informations">
+                    <span class="playerName" id="player2Name">{{opponentPlayer.user.name}}</span>
+                    <br /><br />
+                    <span class="currentPoints" id="player2CurrentPoints">{{opponentPlayer.total}}</span>
+                </div>
+                <div class="playerInformations" id="player1Informations">
+                    <span class="playerName" id="player1Name">{{localPlayer.user.name}}</span>
+                    <br /><br />
+                    <span class="currentPoints" id="player1CurrentPoints">{{localPlayer.total}}</span>
+                </div>
+            </div>
+            <div class="player2HandCardsBox">
+                <div class="playerCharacter" id="player2Character"><img src="img/characters/chewbaccaDog.png" width="100%" /></div>
+                {{#each opponentPlayer.handDeck as |card|}}
+                <cards {{ action 'playHandCard' card}} class="handCards" id="player1HandCard1">{{card.value}}</cards>
+                {{/each}}
+            </div>
+            <div class="gameSetBox">
+                <div class="playerSets" id="player2CurrentSets">
+                    <div class="sets" id="player2Set1"></div>
+                    <div class="sets" id="player2Set2"></div>
+                    <div class="sets" id="player2Set3"></div>
+                </div>
+                <div class="playerSets" id="player1CurrentSets">
+                    <div class="sets" id="player1Set1"></div>
+                    <div class="sets" id="player1Set2"></div>
+                    <div class="sets" id="player1Set3"></div>
+                </div>
+            </div>
+            <div class="playedCardsBox">
+                <div class="player2PlayedCards">
+                    {{#each opponentPlayer.openCards as |card|}}
+                    <cards class="playedCards" id="player2PlayedCard1">{{card.value}}</cards>
+                    {{/each}}
+                </div>
+                <div class="player1PlayedCards">
+                    {{#each localPlayer.openCards as |card|}}
+                    <cards class="playedCards card-{{card.value}}" id="player2PlayedCard1">{{card.value}}</cards>
+                    {{/each}}
+                </div>
+            </div>
+            <div class="gameAction">
+                <br />
+                <h4>Zug: {{turn}}</h4>
+                <input type="button" name="end_turn" {{action 'nextTurn'}} value="End Turn" /><br />
+                <input type="button" name="hold" value="Hold" /><br />
+                <input type="button" name="give_up" value="Give Up" />
+            </div>
+            <div class="player1HandCardsBox">
+                <div class="playerCharacter" id="player1Character"><img src="img/characters/stormtrooper.png" width="100%" /></div>
+                
+                {{#each localPlayer.handDeck as |card|}}
+                <cards {{ action 'playHandCard' card}} class="handCards" id="player1HandCard1">{{card.value}}</cards>                
+                {{/each}}
+            </div>
+        </div>
+
+
+    </script>
+
+    <img src="img/layout/pazaakArenaHeader.png" class="pazaakArenaHeader" alt="PAZAAK ARENA - THE GAME" />
+
+    <script src="js/libs/jquery/dist/jquery.js"></script>
+    <script src="js/libs/handlebars/handlebars.js"></script>
+    <script src="js/libs/ember/ember.debug.js"></script>
+    <script src="js/libs/ember/ember-template-compiler.js"></script>
+    <script src="js/libs/ember-data/ember-data.js"></script>
+
+
+    <script src="js/application.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/models/models.js"></script>
+    <script src="js/controllers/loginController.js"></script>
+    <script src="js/controllers/lobbyController.js"></script>
+    <script src="js/services/tableDeckService.js"></script>
+    <script src="js/services/sideDeckService.js"></script>
+    <script src="js/controllers/matchController.js"></script>
+</body>
+</html>

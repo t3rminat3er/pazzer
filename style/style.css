@@ -1,0 +1,330 @@
+body{
+    width: auto;
+    height: auto;
+    background-image: url(../img/layout/arenaBackground.png);
+    background-repeat: no-repeat;
+    text-align: center;
+    margin-top: 2.2em;
+}
+
+.pazaakArenaHeader{
+    width:829px;
+    height:71px;
+    border:none;
+    margin-bottom: 1em;
+}
+
+
+/* ############################     Login Screen       ###########################*/
+
+.loginBox{
+    width: 40em;
+    height: 30em;
+    background-image: url(../img/layout/loginFormBackground.jpg);
+    border: 0.5em solid white;
+    margin: auto;
+    text-align: left;
+    padding:2em;
+}
+
+.loginCategories{
+    font-family:monospace;
+    font-size: 3em;
+}
+
+.textfieldLogin{
+    font-size: 25pt;
+    width:18em;
+}
+
+#loginButton{
+    background-image: url(../img/layout/buttonLogin.png);
+    width:148px;
+    height: 50px;
+    border:none;
+}
+#loginAsGuestButton{
+    background-image: url(../img/layout/buttonLoginAsGuest.png);
+    width:350px;
+    height: 50px;
+    border:none;
+}
+
+
+/* ############################     inGame Screen       ###########################*/
+
+.inGameBox{
+    width: 50em;
+    height: 35em;
+    background-image: url(../img/layout/loginFormBackground.jpg);
+    border: 0.5em solid white;
+    margin: auto;
+    text-align: left;
+}
+
+.playerInformationsBox{
+    width:8em;
+    height: 100%;
+    float:left;
+}
+
+.playerInformations{
+    width: 8em;
+    height: 50%;
+    text-align: center;
+}
+
+#player1Informations{
+    background-color: beige;
+}
+
+#player2Informations{
+    background-color: blueviolet;
+}
+
+.player2HandCardsBox{
+    width:32em;
+    height:20%;
+    background-color: aqua;
+    margin-left: 8em;
+}
+
+.playedCardsBox{
+    width:38em;
+    height:60%;
+    background-color: lightgreen;
+    margin-left: 8em;
+}
+
+.player1HandCardsBox{
+    width:32em;
+    height:20%;
+    background-color: lightsalmon;
+    margin-left: 8em;
+}
+
+.gameSetBox{
+    width:4em;
+    height:60%;
+    background-color: deeppink;
+    float:right;
+}
+
+.gameAction{
+    width:10em;
+    height:20%;
+    background-color: aquamarine;
+    float:right;
+    text-align: center;
+}
+
+.playerCharacter{
+    width:5em;
+    height:5em;
+    border:1px dashed black;
+    float:left;
+}
+
+.handCards{
+    width: 5em;
+    height:6em;
+    border: 1px solid white;
+    margin-left:1em;
+    float:left;
+}
+
+#player2HandCard1{
+    background-color: red;
+}
+
+#player2HandCard2{
+    background-color: blue;
+}
+
+#player2HandCard3{
+    background-color: goldenrod;
+}
+
+#player2HandCard4{
+    background-color: red;
+}
+
+#player1HandCard1{
+    background-color: red;
+}
+
+#player1HandCard2{
+    background-color: blue;
+}
+
+#player1HandCard3{
+    background-color: goldenrod;
+}
+
+#player1HandCard4{
+    background-color: red;
+}
+
+.playerName{
+    font-size: 14pt;
+    color:darkblue;
+}
+
+.currentPoints{
+    font-size: 36pt;
+    color:greenyellow;
+}
+
+.playedCards{
+    width: 3.5em;
+    height:6em;
+    margin-left:0.6em;
+    margin-top:2.0em;
+    float:left;
+    background-color: azure;
+}
+
+.player2PlayedCards{
+    width:100%;
+    background-color:brown;
+    height:48%;
+}
+
+.player1PlayedCards{
+    width:100%;
+    height:48%;
+    background-color: darkcyan;
+    margin-top: 0.8em;
+}
+
+.playerSets{
+    border:1px dotted black;
+    width: 3em;
+    height:40%;
+    margin-top:1.3em;
+    margin-left: 0.4em;
+}
+
+.playerSets .sets{
+    border:1px solid white;
+    width:80%;
+    height:20%;
+    float:left;
+    margin-left:0.2em;
+    margin-bottom: 0.5em;
+}
+
+#player2Set1{
+    background-color: greenyellow;
+}
+
+#player1Set1{
+    background-color: greenyellow;
+}
+
+#player1Set2{
+    background-color: greenyellow;
+}
+
+
+/* ################################### Lobby Screen ##################### */
+
+.lobbyBox{
+    width: 50em;
+    height: 35em;
+    background-image: url(../img/layout/loginFormBackground.jpg);
+    border: 0.5em solid white;
+    margin: auto;
+    text-align: left;
+}
+
+h1{
+    color:gold;
+    margin:0px;
+    padding:0px;
+}
+
+h2{
+    color:gold;
+    margin:0.5em;
+    padding:0px;
+}
+
+.gameNameBox{
+    width: 46%;
+    height: 75%;
+    background-color:brown;
+    float:left;
+    margin: 0.5em;
+    padding: 0.5em;
+}
+
+.playerNameBox{
+    width: 46%;
+    height: 75%;
+    background-color: green;
+    float:left;
+    margin:0.5em;
+    padding:0.5em;
+}
+
+
+/* ################################### Deckeditor Screen ##################### */
+
+.deckeditorBox{
+    width: 50em;
+    height: 35em;
+    background-image: url(../img/layout/loginFormBackground.jpg);
+    border: 0.5em solid white;
+    margin: auto;
+    text-align: left;
+}
+
+.cardOverviewBox{
+    width:36em;
+    height: 24em;
+    background-color:aquamarine;
+    margin-bottom: 1.5em;
+    margin-top: 2em;
+}
+
+.cardView{
+    width: 6em;
+    height:9em;
+    margin-left:0.6em;
+    margin-top:2.5em;
+    float:left;
+    background-color: azure;
+}
+
+.filterBox{
+    width:36em;
+    height:5em;
+    background-color: crimson;
+}
+
+span.filter{
+    color:aquamarine;
+}
+
+.selectedCardsBox{
+    width:11em;
+    height:31.5em;
+    background-color: darkgrey;
+    float:right;
+    margin-bottom: 1.5em;
+    margin-top: 3.2em;
+}
+
+span.deckname{
+    color:aquamarine;
+}
+
+.currentDeckCard{
+    width:10em;
+    height:2em;
+    background-color: cadetblue;
+    float:left;
+    margin-top: 0.2em;
+    margin-left: 0.5em;
+}

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <title>PAZAAK ARENA - THE GAME - inGame</title>
+    <meta charset="UTF-8">
+    <meta name="author" content="Laurin Schnell - Michael Wax">
+    <meta name="description" content="PAZAAK ARENA - THE GAME - inGame Screen">
+    <meta name="keywords" content="pazaak, pazaak arena, pazaak game, pazaak card game, pazaak star wars, star wars, inGame">
+    <link rel="stylesheet" href="style/style.css">
+</head>
+<body>
+    <div class="inGameBox">
+        <div class="playerInformationsBox">
+            <div class="playerInformations" id="player2Informations">
+                <span class="playerName" id="player2Name">OPPONENT</span>
+                <br/><br/>
+                <span class="currentPoints" id="player2CurrentPoints">12</span>
+            </div>
+            <div class="playerInformations" id="player1Informations">
+                <span class="playerName" id="player1Name">USERNAME</span>
+                <br/><br/>
+                <span class="currentPoints" id="player1CurrentPoints">5</span>
+            </div>
+        </div>    
+        <div class="player2HandCardsBox">
+            <div class="playerCharacter" id="player2Character"><img src="img/characters/chewbaccaDog.png" width="100%" /></div>
+                <cards class="handCards" id="player2HandCard1"></cards>
+                <cards class="handCards" id="player2HandCard2"></cards>
+                <cards class="handCards" id="player2HandCard3"></cards>
+                <cards class="handCards" id="player2HandCard4"></cards>
+        </div>
+        <div class="gameSetBox">
+            <div class="playerSets" id="player2CurrentSets">
+                <div class="sets" id="player2Set1"></div>
+                <div class="sets" id="player2Set2"></div>
+                <div class="sets" id="player2Set3"></div>
+            </div>
+            <div class="playerSets" id="player1CurrentSets">
+                <div class="sets" id="player1Set1"></div>
+                <div class="sets" id="player1Set2"></div>
+                <div class="sets" id="player1Set3"></div>
+            </div>
+        </div>
+        <div class="playedCardsBox">
+            <div class="player2PlayedCards">
+                <cards class="playedCards" id="player2PlayedCard1"></cards>
+                <cards class="playedCards" id="player2PlayedCard2"></cards>
+                <cards class="playedCards" id="player2PlayedCard3"></cards>
+                <cards class="playedCards" id="player2PlayedCard4"></cards>
+                <cards class="playedCards" id="player2PlayedCard5"></cards>
+                <cards class="playedCards" id="player2PlayedCard6"></cards>
+                <cards class="playedCards" id="player2PlayedCard7"></cards>
+                <cards class="playedCards" id="player2PlayedCard8"></cards>
+                <cards class="playedCards" id="player2PlayedCard9"></cards>
+            </div>
+            <div class="player1PlayedCards">
+                <cards class="playedCards" id="player1PlayedCard1"></cards>
+                <cards class="playedCards" id="player1PlayedCard2"></cards>
+                <cards class="playedCards" id="player1PlayedCard3"></cards>
+                <cards class="playedCards" id="player1PlayedCard4"></cards>
+                <cards class="playedCards" id="player1PlayedCard5"></cards>
+                <cards class="playedCards" id="player1PlayedCard6"></cards>
+                <cards class="playedCards" id="player1PlayedCard7"></cards>
+                <cards class="playedCards" id="player1PlayedCard8"></cards>
+                <cards class="playedCards" id="player1PlayedCard9"></cards>
+            </div>
+        </div>
+        <div class="gameAction">
+            <br/>
+            <input type="button" name="end_turn" value="End Turn" /><br/>
+            <input type="button" name="hold" value="Hold" /><br/>
+            <input type="button" name="give_up" value="Give Up" />
+        </div>
+        <div class="player1HandCardsBox">
+            <div class="playerCharacter" id="player1Character"><img src="img/characters/stormtrooper.png" width="100%" /></div>
+            <cards class="handCards" id="player1HandCard1"></cards>
+            <cards class="handCards" id="player1HandCard2"></cards>
+            <cards class="handCards" id="player1HandCard3"></cards>
+            <cards class="handCards" id="player1HandCard4"></cards>
+        </div>
+    </div>
+</body>
+</html>
