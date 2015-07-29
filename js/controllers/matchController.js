@@ -12,7 +12,7 @@
     }.property('opponentUser', 'sideDeck', 'tableDeck'),
 
     match: {},
-    
+
     turn: 0,
 
     tableDeck: function () {
@@ -21,29 +21,52 @@
 
     currentPlayer: null,
     previousPlayer: null,
+    currentPlayerPlayedHandCard: false,
 
     init: function () {
         this._super();
         console.log(this.actions);
 
-        var _this = this;
-        Ember.run.later(this,function(){
-            _this.send('nextTurn');
+        var ctrl = this;
+        Ember.run.later(this, function () {
+            ctrl.send('nextTurn');
         }, 1000);
     },
 
-    currentPlayerChanged: Ember.observer('currentPlayer', function () {
+    currentPlayerChanged: function () {
+        this.currentPlayerPlayedHandCard = false;
+        console.log('current player changed');
         if (this.previousPlayer) {
             this.set('previousPlayer.turn', false);
         }
         this.previousPlayer = this.currentPlayer;
         this.set('currentPlayer.turn', true);
-    }),
+    }.observes('currentPlayer'),
 
-    currentPlayerOpenCardsChanged: Ember.observer('currentPlayer.openCards', function() {
-        
-    }),
+    currentPlayerOpenCardsChanged: function () {
+        var openCardsCount = this.currentPlayer.openCards.length;
+        if (openCardsCount === 9) {
+            this.set('currentPlayer.isHolding', true);
+            this.checkWin();
+            this.send('nextTurn');
+        }
+        console.log("current player open cards changed");
+    }.observes('currentPlayer.openCards.[]'),
 
+    swapPlayers: function () {
+        // swap players
+        var currentPlayer = this.get('currentPlayer') === this.get('localPlayer') ?
+            this.get('opponentPlayer') : this.get('localPlayer');
+        this.set('currentPlayer', currentPlayer);
+    },
+
+    checkWin: function () {
+        // TODO check win after one is holding
+        // 9 cards and not over 20 -> WIN
+        // both holding - higher one but <= 20 -> WIN
+    },
+
+    
     actions: {
         nextTurn: function () {
             this.set('turn', this.turn + 1);
@@ -53,35 +76,48 @@
                 this.set('currentPlayer', this.get('localPlayer')); // set the local player first for now
             } else {
                 if (this.currentPlayer.total > 20) {
-                    alert(this.set('currentPlayer.user.name') + " LOSES! he drew more than 2 this round!");
+                    alert(this.get('currentPlayer.user.name') + " LOSES! he drew more than 20 this round!");
                     return;
                 }
+                this.swapPlayers();
                 if (this.get('currentPlayer.isHolding')) {
-                    // current player is holding
-                } else {
-                    // swap players
-                    var currentPlayer = this.get('currentPlayer') === this.get('localPlayer') ?
-                        this.get('opponentPlayer') : this.get('localPlayer');
-                    this.set('currentPlayer', currentPlayer);
+                    // current player is holding - swap back again
+                    this.swapPlayers();
+                    if (this.get('currentPlayer.isHolding')) {
+                        // both holding
+                        this.checkWin();
+                    }
                 }
             }
             this.get('currentPlayer').draw();
-            if (this.currentPlayer.total === 20) {
-                // auto hold this player and start new turn
+            if (this.get('currentPlayer').total === 20) {
+                // auto hold this player and start new turn switching to the other player
+                console.log('autoHOlding');
                 this.set('currentPlayer.isHolding', true);
                 this.send('nextTurn');
             }
         },
 
+
+
+        hold: function () {
+            this.checkWin();
+            this.set('currentPlayer.isHolding', true);
+            this.send('nextTurn');
+        },
+
         playHandCard: function (card) {
+            if (this.currentPlayerPlayedHandCard) {
+                alert("You can only play one Hand Card per Turn. End your turn or Hold.");
+                return;
+            }
             if (card.player !== this.get('currentPlayer')) {
                 console.warn("Not this player's turn");
                 return;
             }
             this.currentPlayer.openCards.pushObject(card);
             this.currentPlayer.playHandCard(card);
-            // only one hand can be played per round
-            this.send('nextTurn');
+            this.currentPlayerPlayedHandCard = true;
         }
     },
 
