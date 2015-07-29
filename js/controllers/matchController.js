@@ -18,7 +18,6 @@
     actions: {
         nextTurn: function () {
             if (this.currentPlayer) {
-
                 this.set('currentPlayer.turn', false);
                 if (this.currentPlayer.total > 20) {
                     alert(this.get('currentPlayer.user.name') + " LOSES! he drew more than 2 this round!");
@@ -37,6 +36,10 @@
         },
 
         playHandCard: function (card) {
+            if (card.player !== this.get('currentPlayer')) {
+                console.warn("Not this player's turn");
+                return;
+            }
             console.log("playhandcard", card);
             this.currentPlayer.openCards.pushObject(card);
             this.currentPlayer.playHandCard(card);
@@ -52,7 +55,6 @@
     Player: function (user, tableDeck, handDeck) {
         for (var i = 0; i < handDeck.length; i++) {
             handDeck[i].player = this;
-            console.log(handDeck[i]);
         }
         console.log("handdeck", handDeck);
         this.user = user;
