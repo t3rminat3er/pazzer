@@ -13,10 +13,7 @@ App.LobbyRoute = Ember.Route.extend({
 });
 
 App.MatchRoute = Ember.Route.extend({
-    tableDeckService: Ember.inject.service('tableDeck'),
     setupController: function (controller, model) {
-        var tableDeck = this.get('tableDeckService').createNew();
-        controller.set('tableDeck', tableDeck);
         controller.set('match', this.store.findRecord('match', model.id));
         controller.set('opponentUser', this.store.findRecord('user', 1));
     }

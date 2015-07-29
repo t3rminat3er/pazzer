@@ -1,38 +1,76 @@
 ﻿App.MatchController = Ember.ArrayController.extend({
     login: Ember.inject.controller('login'),
     sideDeck: Ember.inject.service('sideDeck'),
-    opponentUser: {},
+    tableDeckService: Ember.inject.service('tableDeck'),
 
+    opponentUser: {},
     localPlayer: function () {
-        return new this.Player(this.get('login.user'), this.tableDeck, this.get('sideDeck').random());
-    }.property('login.user', 'sideDeck'),
+        return new this.Player(this.get('login.user'), this.get('tableDeck'), this.get('sideDeck').random());
+    }.property('login.user', 'sideDeck', 'tableDeck'),
     opponentPlayer: function () {
-        return new this.Player(this.get('opponentUser'), this.tableDeck, this.get('sideDeck').random());
-    }.property('opponentUser', 'sideDeck'),
+        return new this.Player(this.get('opponentUser'), this.get('tableDeck'), this.get('sideDeck').random());
+    }.property('opponentUser', 'sideDeck', 'tableDeck'),
 
     match: {},
-    tableDeck: {},
-    turn: 1,
+    
+    turn: 0,
 
+    tableDeck: function () {
+        return this.get('tableDeckService').createNew();
+    }.property('tableDeckService'),
+
+    currentPlayer: null,
+    previousPlayer: null,
+
+    init: function () {
+        this._super();
+        console.log(this.actions);
+
+        var _this = this;
+        Ember.run.later(this,function(){
+            _this.send('nextTurn');
+        }, 1000);
+    },
+
+    currentPlayerChanged: Ember.observer('currentPlayer', function () {
+        if (this.previousPlayer) {
+            this.set('previousPlayer.turn', false);
+        }
+        this.previousPlayer = this.currentPlayer;
+        this.set('currentPlayer.turn', true);
+    }),
+
+    currentPlayerOpenCardsChanged: Ember.observer('currentPlayer.openCards', function() {
+        
+    }),
 
     actions: {
         nextTurn: function () {
-            if (this.currentPlayer) {
-                this.set('currentPlayer.turn', false);
+            this.set('turn', this.turn + 1);
+            if (!this.get('currentPlayer')) {
+                // first turn
+                console.log("first run");
+                this.set('currentPlayer', this.get('localPlayer')); // set the local player first for now
+            } else {
                 if (this.currentPlayer.total > 20) {
-                    alert(this.get('currentPlayer.user.name') + " LOSES! he drew more than 2 this round!");
+                    alert(this.set('currentPlayer.user.name') + " LOSES! he drew more than 2 this round!");
                     return;
                 }
+                if (this.get('currentPlayer.isHolding')) {
+                    // current player is holding
+                } else {
+                    // swap players
+                    var currentPlayer = this.get('currentPlayer') === this.get('localPlayer') ?
+                        this.get('opponentPlayer') : this.get('localPlayer');
+                    this.set('currentPlayer', currentPlayer);
+                }
             }
-            this.currentPlayer = this.turn % 2 === 0 ? this.get('localPlayer') :
-                this.get('opponentPlayer');
-            this.set('currentPlayer.turn', true);
-            console.log(this.currentPlayer);
-            this.currentPlayer.draw();
+            this.get('currentPlayer').draw();
             if (this.currentPlayer.total === 20) {
-                alert(this.get('currentPlayer.user.name') + " WINS this round!");
+                // auto hold this player and start new turn
+                this.set('currentPlayer.isHolding', true);
+                this.send('nextTurn');
             }
-            this.set('turn', this.turn + 1);
         },
 
         playHandCard: function (card) {
@@ -40,15 +78,11 @@
                 console.warn("Not this player's turn");
                 return;
             }
-            console.log("playhandcard", card);
             this.currentPlayer.openCards.pushObject(card);
             this.currentPlayer.playHandCard(card);
+            // only one hand can be played per round
+            this.send('nextTurn');
         }
-    },
-
-    init: function () {
-        this._super();
-        console.log(this.actions);
     },
 
 
@@ -66,6 +100,7 @@
         this.total = 0;
 
         this.draw = function () {
+            console.log('tabledeck', this.tableDeck);
             var card = this.tableDeck.getCard();
             console.log(card);
             Ember.set(this, 'total', this.total + card.value);
