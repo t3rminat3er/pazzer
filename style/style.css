@@ -1,4 +1,4 @@
-body{
+body {
     width: auto;
     height: auto;
     background-image: url(../img/layout/arenaBackground.png);
@@ -7,10 +7,10 @@ body{
     margin-top: 2.2em;
 }
 
-.pazaakArenaHeader{
-    width:829px;
-    height:71px;
-    border:none;
+.pazaakArenaHeader {
+    width: 829px;
+    height: 71px;
+    border: none;
     margin-bottom: 1em;
 }
 
@@ -21,219 +21,275 @@ body{
 
 /* ############################     Login Screen       ###########################*/
 
-.loginBox{
+.loginBox {
     width: 40em;
     height: 30em;
     background-image: url(../img/layout/loginFormBackground.jpg);
     border: 0.5em solid white;
     margin: auto;
     text-align: left;
-    padding:2em;
+    padding: 2em;
 }
 
-.loginCategories{
-    font-family:monospace;
+.loginCategories {
+    font-family: monospace;
     font-size: 3em;
 }
 
-.textfieldLogin{
+.textfieldLogin {
     font-size: 25pt;
-    width:18em;
+    width: 18em;
 }
 
-#loginButton{
+#loginButton {
     background-image: url(../img/layout/buttonLogin.png);
-    width:148px;
+    width: 148px;
     height: 50px;
-    border:none;
+    border: none;
 }
-#loginAsGuestButton{
+
+#loginAsGuestButton {
     background-image: url(../img/layout/buttonLoginAsGuest.png);
-    width:350px;
+    width: 350px;
     height: 50px;
-    border:none;
+    border: none;
 }
 
 
 /* ############################     inGame Screen       ###########################*/
 
-.inGameBox{
+.inGameBox {
     width: 50em;
     height: 35em;
-    background-image: url(../img/layout/loginFormBackground.jpg);
+    background-image: url(../img/layout/boardBackground.png);
     border: 0.5em solid white;
     margin: auto;
     text-align: left;
 }
 
-.playerInformationsBox{
-    width:8em;
+.playerInformationsBox {
+    width: 8em;
     height: 100%;
-    float:left;
+    float: left;
 }
 
-.playerInformations{
+.playerInformations {
     width: 8em;
     height: 50%;
     text-align: center;
 }
 
-#player1Informations{
-    background-color: beige;
+#player1Informations {
+    margin-top: 3.2em;
 }
 
-#player2Informations{
-    background-color: blueviolet;
+    #player1Informations .playerCharacter {
+        width: 3.5em;
+        height: 3.5em;
+        border: 1px solid white;
+        margin-top: 3.5em;
+        margin-left: 2.1em;
+        margin-bottom: 2em;
+    }
+
+#player2Informations .playerCharacter {
+    width: 3.5em;
+    height: 3.5em;
+    border: 1px solid white;
+    margin-top: 1.4em;
+    margin-left: 2.1em;
+    margin-bottom: 3.5em;
 }
 
-.player2HandCardsBox{
-    width:32em;
-    height:20%;
-    background-color: aqua;
+.playerName {
+    font-size: 14pt;
+    color: darkblue;
+}
+
+.player2HandCardsBox {
+    width: 27em;
+    height: 20%;
+    margin-left: 8em;
+    padding-left: 7em;
+}
+
+.playedCardsBox {
+    position: relative;
+    width: 38em;
+    height: 60%;
     margin-left: 8em;
 }
 
-.playedCardsBox{
-    width:38em;
-    height:60%;
-    background-color: lightgreen;
+.playerPlayedCards {
+    height: 50%;
+    width: 100%;
+    margin-top: 1rem;
+    margin-left: 1rem;
+}
+
+.player1HandCardsBox {
+    width: 27em;
+    height: 20%;
     margin-left: 8em;
+    padding-left: 7em;
+    margin-top: 0.2em;
 }
 
-.player1HandCardsBox{
-    width:32em;
-    height:20%;
-    background-color: lightsalmon;
-    margin-left: 8em;
+.gameSetBox {
+    width: 4em;
+    height: 60%;
+    float: right;
 }
 
-.gameSetBox{
-    width:4em;
-    height:60%;
-    background-color: deeppink;
-    float:right;
-}
-
-.gameAction{
-    width:10em;
-    height:20%;
-    background-color: aquamarine;
-    float:right;
+.gameAction {
+    width: 10em;
+    height: 20%;
+    float: right;
     text-align: center;
 }
 
-.playerCharacter{
-    width:5em;
-    height:5em;
-    border:1px dashed black;
-    float:left;
+.card.hiddenCard {
+    background-image: url(../img/cards/cardback.png);
 }
 
-.handCards{
-    width: 5em;
-    height:6em;
-    border: 1px solid white;
-    margin-left:1em;
-    float:left;
-}
-
-#player2HandCard1{
-    background-color: red;
-}
-
-#player2HandCard2{
-    background-color: blue;
-}
-
-#player2HandCard3{
-    background-color: goldenrod;
-}
-
-#player2HandCard4{
-    background-color: red;
-}
-
-#player1HandCard1{
-    background-color: red;
-}
-
-#player1HandCard2{
-    background-color: blue;
-}
-
-#player1HandCard3{
-    background-color: goldenrod;
-}
-
-#player1HandCard4{
-    background-color: red;
-}
-
-.playerName{
-    font-size: 14pt;
-    color:darkblue;
-}
-
-.currentPoints{
+.currentPoints {
     font-size: 36pt;
-    color:greenyellow;
+    color: greenyellow;
 }
 
-.playedCards{
-    width: 3.5em;
-    height:6em;
-    margin-left:0.6em;
-    margin-top:2.0em;
-    float:left;
-    background-color: azure;
+.card {
+    width: 60px;
+    height: 85px;
+    margin-left: 1em;
+    margin-top: 1em;
+    float: left;
+    background: no-repeat;
 }
 
-.player2PlayedCards{
-    width:100%;
-    background-color:brown;
-    height:48%;
+.card-1 {
+    background-image: url(../img/cards/green_test_card_1.png);
 }
 
-.player1PlayedCards{
-    width:100%;
-    height:48%;
-    background-color: darkcyan;
-    margin-top: 0.8em;
+.card-2 {
+    background-image: url(../img/cards/green_test_card_2.png);
 }
 
-.playerSets{
-    border:1px dotted black;
+.card-3 {
+    background-image: url(../img/cards/green_test_card_3.png);
+}
+
+.card-4 {
+    background-image: url(../img/cards/green_test_card_4.png);
+}
+
+.card-5 {
+    background-image: url(../img/cards/green_test_card_5.png);
+}
+
+.card-6 {
+    background-image: url(../img/cards/green_test_card_6.png);
+}
+
+.card-7 {
+    background-image: url(../img/cards/green_test_card_7.png);
+}
+
+.card-8 {
+    background-image: url(../img/cards/green_test_card_8.png);
+}
+
+.card-9 {
+    background-image: url(../img/cards/green_test_card_9.png);
+}
+
+.card-10 {
+    background-image: url(../img/cards/green_test_card_10.png);
+}
+
+.card-minus-1 {
+    background-image: url(../img/cards/red_test_card_-1.png);
+}
+
+.card-minus-2 {
+    background-image: url(../img/cards/red_test_card_-2.png);
+}
+
+.card-minus-3 {
+    background-image: url(../img/cards/red_test_card_-3.png);
+}
+
+.card-minus-4 {
+    background-image: url(../img/cards/red_test_card_-4.png);
+}
+
+.card-minus-5 {
+    background-image: url(../img/cards/red_test_card_-5.png);
+}
+
+.card-minus-6 {
+    background-image: url(../img/cards/red_test_card_-6.png);
+}
+
+.card-plus-1 {
+    background-image: url(../img/cards/blue_test_card_1.png);
+}
+
+.card-plus-2 {
+    background-image: url(../img/cards/blue_test_card_2.png);
+}
+
+.card-plus-3 {
+    background-image: url(../img/cards/blue_test_card_3.png);
+}
+
+.card-plus-4 {
+    background-image: url(../img/cards/blue_test_card_4.png);
+}
+
+.card-plus-5 {
+    background-image: url(../img/cards/blue_test_card_5.png);
+}
+
+.card-plus-6 {
+    background-image: url(../img/cards/blue_test_card_6.png);
+}
+
+.playerSets {
+    border: 1px dotted black;
     width: 3em;
-    height:40%;
-    margin-top:1.3em;
+    height: 40%;
+    margin-top: 1.3em;
     margin-left: 0.4em;
 }
 
-.playerSets .sets{
-    border:1px solid white;
-    width:80%;
-    height:20%;
-    float:left;
-    margin-left:0.2em;
-    margin-bottom: 0.5em;
-}
+    .playerSets .sets {
+        border: 1px solid white;
+        width: 80%;
+        height: 20%;
+        float: left;
+        margin-left: 0.2em;
+        margin-bottom: 0.5em;
+    }
 
-#player2Set1{
+#player2Set1 {
     background-color: greenyellow;
 }
 
-#player1Set1{
+#player1Set1 {
     background-color: greenyellow;
 }
 
-#player1Set2{
+#player1Set2 {
     background-color: greenyellow;
 }
 
+.handCardsHidden {
+    background-image: url(../img/cards/cardback.png);
+}
 
 /* ################################### Lobby Screen ##################### */
 
-.lobbyBox{
+.lobbyBox {
     width: 50em;
     height: 35em;
     background-image: url(../img/layout/loginFormBackground.jpg);
@@ -242,40 +298,40 @@ body{
     text-align: left;
 }
 
-h1{
-    color:gold;
-    margin:0px;
-    padding:0px;
+h1 {
+    color: gold;
+    margin: 0px;
+    padding: 0px;
 }
 
-h2{
-    color:gold;
-    margin:0.5em;
-    padding:0px;
+h2 {
+    color: gold;
+    margin: 0.5em;
+    padding: 0px;
 }
 
-.gameNameBox{
+.gameNameBox {
     width: 46%;
     height: 75%;
-    background-color:brown;
-    float:left;
+    background-color: brown;
+    float: left;
     margin: 0.5em;
     padding: 0.5em;
 }
 
-.playerNameBox{
+.playerNameBox {
     width: 46%;
     height: 75%;
     background-color: green;
-    float:left;
-    margin:0.5em;
-    padding:0.5em;
+    float: left;
+    margin: 0.5em;
+    padding: 0.5em;
 }
 
 
 /* ################################### Deckeditor Screen ##################### */
 
-.deckeditorBox{
+.deckeditorBox {
     width: 50em;
     height: 35em;
     background-image: url(../img/layout/loginFormBackground.jpg);
@@ -284,51 +340,51 @@ h2{
     text-align: left;
 }
 
-.cardOverviewBox{
-    width:36em;
+.cardOverviewBox {
+    width: 36em;
     height: 24em;
-    background-color:aquamarine;
+    background-color: aquamarine;
     margin-bottom: 1.5em;
     margin-top: 2em;
 }
 
-.cardView{
+.cardView {
     width: 6em;
-    height:9em;
-    margin-left:0.6em;
-    margin-top:2.5em;
-    float:left;
+    height: 9em;
+    margin-left: 0.6em;
+    margin-top: 2.5em;
+    float: left;
     background-color: azure;
 }
 
-.filterBox{
-    width:36em;
-    height:5em;
+.filterBox {
+    width: 36em;
+    height: 5em;
     background-color: crimson;
 }
 
-span.filter{
-    color:aquamarine;
+span.filter {
+    color: aquamarine;
 }
 
-.selectedCardsBox{
-    width:11em;
-    height:31.5em;
+.selectedCardsBox {
+    width: 11em;
+    height: 31.5em;
     background-color: darkgrey;
-    float:right;
+    float: right;
     margin-bottom: 1.5em;
     margin-top: 3.2em;
 }
 
-span.deckname{
-    color:aquamarine;
+span.deckname {
+    color: aquamarine;
 }
 
-.currentDeckCard{
-    width:10em;
-    height:2em;
+.currentDeckCard {
+    width: 10em;
+    height: 2em;
     background-color: cadetblue;
-    float:left;
+    float: left;
     margin-top: 0.2em;
     margin-left: 0.5em;
 }

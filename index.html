@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="style/style.css" />
 </head>
 <body>
+    
     <!--LOGIN-->
     <script type="text/x-handlebars" data-template-name="login">
         <form class="loginBox" id="loginBox" {{action "login" on="submit"}}>
@@ -70,29 +71,36 @@
     </script>
     <!--MATCH-->
 <script type="text/x-handlebars" data-template-name="match">
+    <!--<audio id="player" src="sounds/menu_music.mp3" autoplay loop></audio>-->
+<div>
+	<button onclick="document.getElementById('player').play()">Play</button>
+	<button onclick="document.getElementById('player').pause()">Pause</button>
+	<button onclick="document.getElementById('player').volume+=0.1">Volume Up</button>
+	<button onclick="document.getElementById('player').volume-=0.1">Volume Down</button>
+</div> 
         <div class="inGameBox">
             <div class="playerInformationsBox">
                 <div class="playerInformations" id="player2Informations">
                     <span class="playerName" id="player2Name">{{opponentPlayer.user.name}}</span>
                     <br /><br />
+                    <div class="playerCharacter" id="player2Character"><img src="img/characters/chewbaccaDog.png" width="100%" /></div>
                     <span class="currentPoints" id="player2CurrentPoints">{{opponentPlayer.total}}</span>
                     {{#if opponentPlayer.isHolding }}
-                    <h2>HOLDING</h2>
+                        <h2>HOLDING</h2>
                     {{/if}}
                 </div>
                 <div class="playerInformations" id="player1Informations">
-                    <span class="playerName" id="player1Name">{{localPlayer.user.name}}</span>
-                    <br /><br />
                     <span class="currentPoints" id="player1CurrentPoints">{{localPlayer.total}}</span>
                     {{#if localPlayer.isHolding }}
                         <h2>HOLDING</h2>
                     {{/if}}
+                    <div class="playerCharacter" id="player1Character"><img src="img/characters/stormtrooper.png" width="100%" /></div>
+                    <span class="playerName" id="player1Name">{{localPlayer.user.name}}</span>
                 </div>
             </div>
             <div {{bind-attr class=":player2HandCardsBox opponentPlayer.turn::disabled"}}>
-                <div class="playerCharacter" id="player2Character"><img src="img/characters/chewbaccaDog.png" width="100%" /></div>
                 {{#each opponentPlayer.handDeck as |card|}}
-                <cards {{ action 'playHandCard' card}} class="handCards" id="player1HandCard1">{{card.value}}</cards>
+                <div {{ action 'playHandCard' card}} class="card hiddenCard" ></div>
                 {{/each}}
             </div>
             <div class="gameSetBox">
@@ -108,14 +116,14 @@
                 </div>
             </div>
             <div class="playedCardsBox">
-                <div class="player2PlayedCards">
+                <div class="playerPlayedCards">
                     {{#each opponentPlayer.openCards as |card|}}
-                    <cards class="playedCards" id="player2PlayedCard1">{{card.value}}</cards>
+                    <div class="card card-{{card.name}}" id="player2PlayedCard1"></div>
                     {{/each}}
                 </div>
-                <div class="player1PlayedCards">
+                <div class="playerPlayedCards">
                     {{#each localPlayer.openCards as |card|}}
-                    <cards class="playedCards card-{{card.value}}" id="player2PlayedCard1">{{card.value}}</cards>
+                    <div class="card card-{{card.name}}" id="player2PlayedCard1"></div>
                     {{/each}}
                 </div>
             </div>
@@ -127,10 +135,8 @@
                 <input type="button" name="give_up" value="Give Up" />
             </div>
             <div {{bind-attr class=":player1HandCardsBox localPlayer.turn::disabled"}} >
-                <div class="playerCharacter" id="player1Character"><img src="img/characters/stormtrooper.png" width="100%" /></div>
-                
                 {{#each localPlayer.handDeck as |card|}}
-                <cards {{ action 'playHandCard' card}} class="handCards" id="player1HandCard1">{{card.value}}</cards>                
+                <div {{ action 'playHandCard' card}}  class="card card-{{card.name}}"></div>                
                 {{/each}}
             </div>
         </div>

@@ -39,6 +39,13 @@
 
 });
 
-App.Card =  function (value) {
-        this.value = value;
-    }
+App.Card = function (value) {
+    this.value = value;
+    this.name = value;
+};
+
+App.PlusMinusCard = function (value) {
+    this.value = value;
+    this.name = (value > 0 ? "plus" : "minus") + "-" + Math.abs(value);
+}
+
