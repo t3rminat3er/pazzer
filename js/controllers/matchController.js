@@ -47,8 +47,9 @@
         var openCardsCount = this.currentPlayer.openCards.length;
         if (openCardsCount === 9) {
             this.set('currentPlayer.isHolding', true);
-            this.checkWin();
-            this.send('nextTurn');
+            if (!this.checkWin()) {
+                this.send('nextTurn');
+            }
         }
         console.log("current player open cards changed");
     }.observes('currentPlayer.openCards.[]'),
@@ -64,9 +65,11 @@
         // TODO check win after one is holding
         // 9 cards and not over 20 -> WIN
         // both holding - higher one but <= 20 -> WIN
+
+        // return a bool indicating whether someone one
     },
 
-    
+
     actions: {
         nextTurn: function () {
             this.set('turn', this.turn + 1);
@@ -98,10 +101,10 @@
             }
         },
 
-
-
         hold: function () {
-            this.checkWin();
+            if (this.checkWin()) {
+                return;
+            }
             this.set('currentPlayer.isHolding', true);
             this.send('nextTurn');
         },

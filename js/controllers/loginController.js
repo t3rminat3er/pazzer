@@ -1,4 +1,18 @@
-﻿App.LoginController = Ember.Controller.extend({
+﻿App.LoginController = EmberSockets.extend({
+    
+    init: function() {
+        this._super();
+    },
+
+    sockets: {
+        loggedIn: function(username) {
+            alert(username);
+
+            //this.user = this.getUniqueGuest();
+            //this.transitionTo('lobby', this.user.name);
+        }  
+    },
+
     actions: {
         login: function () {
             console.log("login action clicked", loginFailed);
@@ -17,8 +31,7 @@
             //}.bind(this));
         },
         guestlogin: function () {
-            this.user = this.getUniqueGuest();
-            this.transitionTo('lobby', this.user.name);
+            this.socket.emit('guestLogin');
         }
     },
 
