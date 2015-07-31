@@ -8,5 +8,8 @@ var login = require('./login.js');
 
 io.sockets.on('connection', function (socket) {
     console.log('A user has connected', socket.request.connection._peername);
+    socket.on('disconnect', function() {
+        console.log("DISC");
+    });
     login.listen(socket);
 });

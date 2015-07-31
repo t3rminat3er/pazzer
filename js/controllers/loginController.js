@@ -5,11 +5,10 @@
     },
 
     sockets: {
-        loggedIn: function(username) {
-            alert(username);
-
-            //this.user = this.getUniqueGuest();
-            //this.transitionTo('lobby', this.user.name);
+        loggedIn: function(user) {
+            alert(user.name);
+            this.user = user;
+            this.transitionTo('lobby');
         }  
     },
 
@@ -35,10 +34,6 @@
         }
     },
 
-    getUniqueGuest: function () {
-        var user = { id: 0, name: "Guest " + 1, isGuest: true };
-        return user;
-    },
     user: {},
     loginFailed: false,
     isProcessing: false

@@ -1,6 +1,9 @@
 ﻿App.LobbyController = Ember.Controller.extend({
- 
-    username: "",
+    login: Ember.inject.controller('login'),
+
+    username: function() {
+        return this.get('login').user.name;
+    }.property('login'),
 
     onlinePlayers: [],
 

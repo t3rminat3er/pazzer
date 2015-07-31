@@ -1,12 +1,11 @@
 ﻿App.Router.map(function () {
     this.route('login', { path: '/' });
-    this.route('lobby', { path: '/lobby/:username' });
+    this.route('lobby', { path: '/lobby' });
     this.route('match', { path: '/match/:id' });
 });
 
 App.LobbyRoute = Ember.Route.extend({
     setupController: function (controller, model) {
-        controller.set('username', model.username);
         controller.set('hostedMatches', this.store.findAll('match'));
         controller.set('onlinePlayers', this.store.findAll('user'));
     }

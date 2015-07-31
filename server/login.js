@@ -1,31 +1,44 @@
 ﻿var guests = [];
 
-var onSocketDisconnect = function (socket) {
-    console.log("disconnected", socket);
+var onSocketDisconnect = function () {
+    for (var i = 0; i < guests.length; i++) {
+        var guest = guests[i];
+        if (guest) {
+            if (guest.socket === this) {
+                console.log("guest disconnected", guest.name);
+                guests[i] = null;
+                return;
+            }
+        }
+    }
 },
 
-    getGuestName = function(i) {
+    getGuestName = function (i) {
         return "Guest " + i;
     },
 
-    listen = function (socket) {
-        console.log("login listening");
-        
-        socket.on('disconnect', onSocketDisconnect);
-        socket.on('guestLogin', function () {
-            var guest = {
-                socket: socket
-            };
-            var i = 1;
-            for (; i < guests.length; i++) {
-                if (!guests[i]) {
-                    break;
-                }
+    onGuestLogin = function () {
+        var guest = {
+            socket: this
+        };
+        var i = 1;
+        for (; i < guests.length; i++) {
+            if (!guests[i]) {
+                break;
             }
-            guest.name = getGuestName(i);
-            guests[i] = guest;
-            socket.emit('loggedIn', guest.name);
+        }
+        guest.name = getGuestName(i);
+        guests[i] = guest;
+        this.emit('loggedIn', {
+            name: guest.name,
+            isGuest: true
         });
+    },
+
+    listen = function (socket) {
+        socket.on('disconnect', onSocketDisconnect);
+        socket.on('guestLogin', onGuestLogin);
+        // TODO user login
     };
 
 
