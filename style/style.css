@@ -18,6 +18,33 @@ body {
     opacity: 0.5;
 }
 
+.modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    width: 300px;
+    background-color: #fff;
+    padding: 1em;
+}
+
+.flush--top {
+    margin-top: 0;
+}
+
+.overlay {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
 
 /* ############################     Login Screen       ###########################*/
 

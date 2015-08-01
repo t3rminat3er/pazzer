@@ -9,8 +9,20 @@
     <link rel="stylesheet" href="style/style.css" />
 </head>
 <body>
-    
-    <!--LOGIN-->
+<script type="text/x-handlebars">
+        {{outlet}}
+        {{outlet 'modal'}}
+    </script>
+
+    <script type="text/x-handlebars" id="components/modal-dialog">
+        <div class="overlay" {{action "close"}}>
+        </div>
+        <div class="modal">
+            {{yield}}
+        </div>
+    </script>
+
+<!--LOGIN-->
     <script type="text/x-handlebars" data-template-name="login">
         <form class="loginBox" id="loginBox" {{action "login" on="submit"}}>
             <p>
@@ -31,7 +43,6 @@
             <a href="">Forgot your password?</a>
             <input type="button" class="button" id="loginCreateAccount" value="CREATE NEW ACCOUNT" />
         </form>
-
     </script>
 
     <!--LOBBY-->
@@ -40,44 +51,65 @@
             <h1>Welcome to Cantina {{username}}</h1>
             <div class="gameNameBox">
                 <h2>GAMENAME</h2>
-                <ul id="matches">
-                    {{#each hostedMatches as |match|}}
-                    {{#link-to 'match' match.id}}
-                    <li class="gameNameLink">
-                        <a href="">
-                            <label>{{match.title}}</label>
-                        </a>
-                    </li>
-                    {{/link-to}}
-                    {{/each}}
-                </ul>
+                {{outlet "matches"}}
             </div>
             <div class="playerNameBox">
                 <h2>PLAYERNAME</h2>
-                <ul id="players">
-                    {{#each onlinePlayers as |player|}}
-                    <li class="playerName">
-                        <span class="playerName" id="playerName1">{{player.name}}</span><br />
-                    </li>
-                    {{/each}}
-                </ul>
+                {{outlet "players"}}
 
             </div>
-            <button class="lobbyButton">REFRESH</button>
-            <button class="lobbyButton">CREATE GAME</button>
+            <button class="lobbyButton" {{action 'openModal' 'createMatch'}}>CREATE GAME</button>
             <button class="lobbyButton">DECK EDITOR</button>
             <button class="lobbyButton">LOGOUT</button>
         </div>
     </script>
+
+    <script type="text/x-handlebars" data-template-name="createMatch">
+        {{#modal-dialog action="closeModal"}}
+        <h3 class="flush--top">Create Match</h3>
+        <p>Enter the match name:</p>
+        <p>{{username}}</p>
+        <p>{{input value=name}}</p>
+        <button {{action 'createMatch'}}>Create</button>
+        {{/modal-dialog}}
+    </script>
+
+    <!-- MATCHES-->
+    <script type="text/x-handlebars" data-template-name="matches">
+        <ul id="matches">
+            {{#each matches as |match|}}
+            {{#link-to 'match' match.id}}
+            <li class="gameNameLink">
+                <a href="">
+                    <label>{{match.title}}</label>
+                </a>
+            </li>
+            {{/link-to}}
+            {{/each}}
+        </ul>
+    </script>
+
+    <!--PLAYERS-->
+    <script type="text/x-handlebars" data-template-name="players">
+        <ul id="players">
+            {{#each onlinePlayers as |player|}}
+            <li class="playerName">
+                <span class="playerName" id="playerName1">{{player.name}}</span><br />
+            </li>
+            {{/each}}
+        </ul>
+    </script>
+
+
     <!--MATCH-->
-<script type="text/x-handlebars" data-template-name="match">
-    <!--<audio id="player" src="sounds/menu_music.mp3" autoplay loop></audio>-->
-<div>
-	<button onclick="document.getElementById('player').play()">Play</button>
-	<button onclick="document.getElementById('player').pause()">Pause</button>
-	<button onclick="document.getElementById('player').volume+=0.1">Volume Up</button>
-	<button onclick="document.getElementById('player').volume-=0.1">Volume Down</button>
-</div> 
+    <script type="text/x-handlebars" data-template-name="match">
+        <!--<audio id="player" src="sounds/menu_music.mp3" autoplay loop></audio>-->
+        <div>
+            <button onclick="document.getElementById('player').play()">Play</button>
+            <button onclick="document.getElementById('player').pause()">Pause</button>
+            <button onclick="document.getElementById('player').volume+=0.1">Volume Up</button>
+            <button onclick="document.getElementById('player').volume-=0.1">Volume Down</button>
+        </div>
         <div class="inGameBox">
             <div class="playerInformationsBox">
                 <div class="playerInformations" id="player2Informations">
@@ -86,13 +118,13 @@
                     <div class="playerCharacter" id="player2Character"><img src="img/characters/chewbaccaDog.png" width="100%" /></div>
                     <span class="currentPoints" id="player2CurrentPoints">{{opponentPlayer.total}}</span>
                     {{#if opponentPlayer.isHolding }}
-                        <h2>HOLDING</h2>
+                    <h2>HOLDING</h2>
                     {{/if}}
                 </div>
                 <div class="playerInformations" id="player1Informations">
                     <span class="currentPoints" id="player1CurrentPoints">{{localPlayer.total}}</span>
                     {{#if localPlayer.isHolding }}
-                        <h2>HOLDING</h2>
+                    <h2>HOLDING</h2>
                     {{/if}}
                     <div class="playerCharacter" id="player1Character"><img src="img/characters/stormtrooper.png" width="100%" /></div>
                     <span class="playerName" id="player1Name">{{localPlayer.user.name}}</span>
@@ -100,7 +132,7 @@
             </div>
             <div {{bind-attr class=":player2HandCardsBox opponentPlayer.turn::disabled"}}>
                 {{#each opponentPlayer.handDeck as |card|}}
-                <div {{ action 'playHandCard' card}} class="card hiddenCard" ></div>
+                <div {{ action 'playHandCard' card}} class="card hiddenCard"></div>
                 {{/each}}
             </div>
             <div class="gameSetBox">
@@ -131,20 +163,19 @@
                 <br />
                 <h4>Zug: {{turn}}</h4>
                 <input type="button" name="end_turn" {{action 'nextTurn'}} value="End Turn" /><br />
-                <input type="button" name="hold" value="Hold" {{action 'hold'}}/><br />
+                <input type="button" name="hold" value="Hold" {{action 'hold'}} /><br />
                 <input type="button" name="give_up" value="Give Up" />
             </div>
-            <div {{bind-attr class=":player1HandCardsBox localPlayer.turn::disabled"}} >
+            <div {{bind-attr class=":player1HandCardsBox localPlayer.turn::disabled"}}>
                 {{#each localPlayer.handDeck as |card|}}
-                <div {{ action 'playHandCard' card}}  class="card card-{{card.name}}"></div>                
+                <div {{ action 'playHandCard' card}} class="card card-{{card.name}}"></div>
                 {{/each}}
             </div>
         </div>
-
-
     </script>
 
-<img src="img/layout/pazaakArenaHeader.png" class="pazaakArenaHeader" alt="PAZAAK ARENA - THE GAME"/>
+    <img src="img/layout/pazaakArenaHeader.png" class="pazaakArenaHeader" alt="PAZAAK ARENA - THE GAME" />
+
 
     <script src="js/libs/socket.io-client/socket.io.js"></script>
     <script src="js/libs/jquery/dist/jquery.js"></script>
@@ -155,12 +186,16 @@
     <script src="js/libs/ember-sockets/package/EmberSockets.js"></script>
 
     <script src="js/application.js"></script>
+    <script src="js/components/modalComponent.js"></script>
     <script src="js/router.js"></script>
     <script src="js/models/models.js"></script>
     <script src="js/controllers/loginController.js"></script>
     <script src="js/controllers/lobbyController.js"></script>
+    <script src="js/controllers/matchesController.js"></script>
+    <script src="js/controllers/playersController.js"></script>
     <script src="js/services/tableDeckService.js"></script>
     <script src="js/services/sideDeckService.js"></script>
     <script src="js/controllers/matchController.js"></script>
+    <script src="js/controllers/createMatchController.js"></script>
 </body>
 </html>

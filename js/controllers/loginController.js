@@ -6,12 +6,11 @@
 
     sockets: {
         loggedIn: function(user) {
-            alert(user.name);
-            this.user = user;
+            this.set('user', user);
             this.transitionTo('lobby');
         }  
     },
-
+    
     actions: {
         login: function () {
             console.log("login action clicked", loginFailed);

@@ -1,4 +1,4 @@
-﻿App.MatchController = Ember.ArrayController.extend({
+﻿App.MatchController = Ember.Controller.extend({
     login: Ember.inject.controller('login'),
     sideDeck: Ember.inject.service('sideDeck'),
     tableDeckService: Ember.inject.service('tableDeck'),
@@ -22,16 +22,6 @@
     currentPlayer: null,
     previousPlayer: null,
     currentPlayerPlayedHandCard: false,
-
-    init: function () {
-        this._super();
-        console.log(this.actions);
-
-        var ctrl = this;
-        Ember.run.later(this, function () {
-            ctrl.send('nextTurn');
-        }, 1000);
-    },
 
     currentPlayerChanged: function () {
         this.currentPlayerPlayedHandCard = false;

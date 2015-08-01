@@ -4,10 +4,20 @@
     this.route('match', { path: '/match/:id' });
 });
 
+
 App.LobbyRoute = Ember.Route.extend({
-    setupController: function (controller, model) {
-        controller.set('hostedMatches', this.store.findAll('match'));
-        controller.set('onlinePlayers', this.store.findAll('user'));
+    renderTemplate: function () {
+        this.render('lobby');
+        this.render('matches', {
+            outlet: 'matches',
+            controller: this.controllerFor('matches'),
+            into: 'lobby'
+        });
+        this.render('players', {
+            outlet: 'players',
+            controller: this.controllerFor('players'),
+            into: 'lobby'
+        });
     }
 });
 
