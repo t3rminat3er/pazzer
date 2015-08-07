@@ -3,11 +3,17 @@
         host: 'localhost',
         port: 34251,
         controllers: ['login', 'matches', 'players', 'match', 'createMatch'],
-        autoConnect: true
+        autoConnect: true,
+        init: function() {
+            this._super();
+            this.socket.on('alert', function (msg) {
+                alert(msg);
+                console.log('application.js', msg);
+            });
+        }
     }),
     LOG_TRANSITIONS: true, LOG_TRANSITIONS_INTERNAL: true
 });
-
 
 App.ApplicationRoute = Ember.Route.extend({
     actions: {

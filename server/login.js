@@ -1,7 +1,8 @@
 ﻿var guests = [];
 var onlinePlayers = [];
 
-var socketServer = require('./socketServer.js');
+var socketServer = require('./socketServer.js'),
+    ID = require('./id.js');
 
 socketServer.io.on('connection', function (socket) {
     socket.on('disconnect', onSocketDisconnect);
@@ -22,7 +23,7 @@ var addDummyPlayers = function () {
             user: user,
             socket: socket
         };
-        socket.user = serverUser;
+        socket.user = user;
         onlinePlayers.push(serverUser);
         if (socket && socket.emit) {
             socket.emit('loggedIn', user);
@@ -68,7 +69,8 @@ var addDummyPlayers = function () {
 
     onGuestLogin = function () {
         var guest = {
-            isGuest: true
+            isGuest: true,
+            id: ID()
         };
         var i = 1;
         for (; i < guests.length; i++) {

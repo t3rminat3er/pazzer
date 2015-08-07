@@ -1,41 +1,52 @@
-﻿var socketServer = require('./socketServer.js'),
-    id = require('./id.js'),
-    find = require('array-find'),
+﻿var Match = require('./match.js'),
+    Player = require('./player.js'),
+    socketServer = require('./socketServer.js'),
+    util = require('util'),
 
-    openMatches = [];
+
+    openMatches = [
+        {
+                id: "123id",
+                name: "Server Test Match"
+        }],
+        
+    getMatches = function () {
+        console.log("getMatches", openMatches);
+        this.emit('matches', openMatches);
+    },
+
+    createMatch = function (matchName) {
+        var match = new Match(new Player(this), matchName);
+        openMatches.push(match);
+        socketServer.io.emit('matchOpened', match);
+    },
+
+    joinMatch = function (matchId) {
+        console.log('find by id', matchId);
+        var match;
+        for (var i = 0; i < openMatches.length; i++) {
+            match = openMatches[i];
+            if (match.id === matchId) {
+                console.log('matches.js', 'match found');
+                // remove - match is no longer open
+                match.onPlayerJoined(new Player(this));
+                
+                // TODO uncomment - testing
+                //socketServer.io.emit('matchClosed', match);
+                openMatches.splice(i, 1);
+                return;
+            }
+        }
+        console.warn('no open match with id: ', matchId);
+        this.emit('alert', util.format('Kein Spiel mit der angegebenen ID %s gefunden.', matchId));
+        return;
+    };
 
 
 socketServer.io.on('connection', function (socket) {
-    socket.on('getMatches', function () {
-        console.log("get players", matches);
-        this.emit('matches', matches.map(function (match) {
-            return match.meta;
-        }));
-    });
-
-    socket.on('createMatch', function (matchName) {
-        var matchMeta = {
-            id: id(),
-            name: matchName
-        }
-        var match = {
-            meta: matchMeta,
-            players: [
-                {
-                    user: this.user,
-                    socket: this
-                }]
-        }
-        openMatches.push(match);
-        this.emit('matchCreated', matchMeta);
-        socketServer.io.emit('matchOpened', matchMeta);
-    });
-
-    socket.on('joinMatch', function (matchId) {
-        var match = openMatches.find(function(value) {
-            return value.id === matchId;
-        });
-    });
+    socket.on('getMatches', getMatches);
+    socket.on('match.create', createMatch);
+    socket.on('joinMatch', joinMatch);
 });
 
 module.exports = {};

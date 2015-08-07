@@ -3,15 +3,16 @@
 
     actions: {
         createMatch: function () {
+            console.log(this.name);
             if (!this.name) {
                 alert("Benenne das Spiel.");
             }
-            this.socket.emit('createMatch', name);
+            this.socket.emit('match.create', this.name);
         }
     },
 
     sockets: {
-        matchCreated: function (match) {
+        'match.joined': function (match) {
             this.send('closeModal');
             this.transitionTo('match', match.id);
         }

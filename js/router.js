@@ -23,7 +23,5 @@ App.LobbyRoute = Ember.Route.extend({
 
 App.MatchRoute = Ember.Route.extend({
     setupController: function (controller, model) {
-        controller.set('match', this.store.findRecord('match', model.id));
-        controller.set('opponentUser', this.store.findRecord('user', 1));
     }
 });

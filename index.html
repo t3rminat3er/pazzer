@@ -78,13 +78,11 @@
     <script type="text/x-handlebars" data-template-name="matches">
         <ul id="matches">
             {{#each matches as |match|}}
-            {{#link-to 'match' match.id}}
             <li class="gameNameLink">
-                <a href="">
-                    <label>{{match.title}}</label>
+                <a href="" {{action "join" match}}>
+                    <label>{{match.name}}</label>
                 </a>
             </li>
-            {{/link-to}}
             {{/each}}
         </ul>
     </script>
@@ -113,25 +111,25 @@
         <div class="inGameBox">
             <div class="playerInformationsBox">
                 <div class="playerInformations" id="player2Informations">
-                    <span class="playerName" id="player2Name">{{opponentPlayer.user.name}}</span>
+                    <span class="playerName" id="player2Name">{{opponent.user.name}} {{opponent.user.id}}</span>
                     <br /><br />
                     <div class="playerCharacter" id="player2Character"><img src="img/characters/chewbaccaDog.png" width="100%" /></div>
-                    <span class="currentPoints" id="player2CurrentPoints">{{opponentPlayer.total}}</span>
-                    {{#if opponentPlayer.isHolding }}
+                    <span class="currentPoints" id="player2CurrentPoints">{{opponent.total}}</span>
+                    {{#if opponent.isHolding }}
                     <h2>HOLDING</h2>
                     {{/if}}
                 </div>
                 <div class="playerInformations" id="player1Informations">
-                    <span class="currentPoints" id="player1CurrentPoints">{{localPlayer.total}}</span>
-                    {{#if localPlayer.isHolding }}
+                    <span class="currentPoints" id="player1CurrentPoints">{{player.total}}</span>
+                    {{#if player.isHolding }}
                     <h2>HOLDING</h2>
                     {{/if}}
                     <div class="playerCharacter" id="player1Character"><img src="img/characters/stormtrooper.png" width="100%" /></div>
-                    <span class="playerName" id="player1Name">{{localPlayer.user.name}}</span>
+                    <span class="playerName" id="player1Name">{{player.user.name}} {{player.user.id}}</span>
                 </div>
             </div>
-            <div {{bind-attr class=":player2HandCardsBox opponentPlayer.turn::disabled"}}>
-                {{#each opponentPlayer.handDeck as |card|}}
+            <div {{bind-attr class=":player2HandCardsBox opponent.turn::disabled"}}>
+                {{#each opponent.handDeck as |card|}}
                 <div {{ action 'playHandCard' card}} class="card hiddenCard"></div>
                 {{/each}}
             </div>
@@ -149,12 +147,12 @@
             </div>
             <div class="playedCardsBox">
                 <div class="playerPlayedCards">
-                    {{#each opponentPlayer.openCards as |card|}}
+                    {{#each opponent.openCards as |card|}}
                     <div class="card card-{{card.name}}" id="player2PlayedCard1"></div>
                     {{/each}}
                 </div>
                 <div class="playerPlayedCards">
-                    {{#each localPlayer.openCards as |card|}}
+                    {{#each player.openCards as |card|}}
                     <div class="card card-{{card.name}}" id="player2PlayedCard1"></div>
                     {{/each}}
                 </div>
@@ -166,8 +164,8 @@
                 <input type="button" name="hold" value="Hold" {{action 'hold'}} /><br />
                 <input type="button" name="give_up" value="Give Up" />
             </div>
-            <div {{bind-attr class=":player1HandCardsBox localPlayer.turn::disabled"}}>
-                {{#each localPlayer.handDeck as |card|}}
+            <div {{bind-attr class=":player1HandCardsBox player.turn::disabled"}}>
+                {{#each player.handDeck as |card|}}
                 <div {{ action 'playHandCard' card}} class="card card-{{card.name}}"></div>
                 {{/each}}
             </div>

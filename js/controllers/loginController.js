@@ -7,7 +7,7 @@
     sockets: {
         loggedIn: function(user) {
             this.set('user', user);
-            this.transitionTo('lobby');
+            this.transitionToRoute('lobby');
         }  
     },
     
