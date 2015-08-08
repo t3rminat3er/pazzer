@@ -35,11 +35,16 @@
                 console.log('playHandCard', arguments, this);
                 if (isActingSocketCurrentPlayer(this)) {
                     var player = getPlayerFromSocket(this);
+                    if (player.hasPlayedHandCardThisTurn) {
+                        this.emit('alert', "You've already played a hand card this turn.");
+                        return;
+                    }
                     var card = player.handDeck[args.index];
                     if (!card.value === args.card.value) {
                         this.emit('alert', "Your handdeck doesn't contain a card with the value " + card.value + ". Are you cheating?");
                         return;
                     }
+                    player.hasPlayedHandCardThisTurn = true;
                     player.handDeck.splice(args.index, 1);
                     player.emitPublic('playedCard', args);
                     player.onCardDrawn(card);
