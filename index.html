@@ -129,7 +129,7 @@
                 </div>
             </div>
             <div {{bind-attr class=":player2HandCardsBox opponent.turn::disabled"}}>
-                {{#each opponent.handDeck as |card|}}
+                {{#each opponent.handDeck key="@index" as |card|}}
                 <div {{ action 'playHandCard' card}} class="card hiddenCard"></div>
                 {{/each}}
             </div>

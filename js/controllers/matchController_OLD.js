@@ -128,17 +128,12 @@
         console.log("handdeck", handDeck);
         this.user = user;
         this.tableDeck = tableDeck;
-        this.openCards = [];
         this.handDeck = handDeck;
         this.turn = false;
 
         this.total = 0;
 
         this.draw = function () {
-            console.log('tabledeck', this.tableDeck);
-            var card = this.tableDeck.getCard();
-            console.log(card);
-            Ember.set(this, 'total', this.total + card.value);
             this.openCards.pushObject(card);
         };
         this.playHandCard = function (card) {
