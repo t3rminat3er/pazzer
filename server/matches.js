@@ -16,7 +16,8 @@
     },
 
     createMatch = function (matchName) {
-        var match = new Match(new Player(this), matchName);
+        var match = new Match(matchName);
+        match.onPlayerJoined(new Player(this));
         openMatches.push(match);
         socketServer.io.emit('matchOpened', match);
     },

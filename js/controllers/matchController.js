@@ -5,13 +5,16 @@
     player: {},
     match: {},
 
-    log: function () {
-        //var ctlr= this;
-        //setTimeout(function() {
-        //    console.log("player opencards", ctlr.get('player.openCards')[0]);
-        //    console.log("opponent opencards", ctlr.get('opponent.openCards')[0]);
-        //    ctlr.log();
-        //}, 5000);
+    setPlayer: function(playerName, user) {
+        this.set(playerName, App.Player.create({
+            user: user,
+            socket: this.socket.socket
+        }));
+    },
+
+    resetPlayer: function(player) {
+        player.set('openCards', []);
+        player.set('total', 0);
     },
 
     actions: {
@@ -51,19 +54,19 @@
         'match.joined': function (match) {
             console.log('matchController.js matchCreated', this);
             this.match = match;
-            this.set('player', App.Player.create({
-                user: this.get('login.user'),
-                socket: this.socket.socket
-            }));
+            this.setPlayer('player', this.get('login.user'));
         },
 
         'opponent.joined': function (user) {
             console.log('matchController.js opponent joined', arguments);
-            this.set('opponent', App.Player.create({
-                user: user,
-                socket: this.socket.socket
-            }));
-            this.log();
+            this.setPlayer('opponent', user);
+        },
+
+        'set.ended': function(args) {
+            console.log('set.ended ', arguments);
+            this.resetPlayer(this.player);
+            this.resetPlayer(this.opponent);
+            alert(args.reason);
         }
     }
 });
@@ -76,11 +79,16 @@ App.Player = Ember.Object.extend({
     total: 0,
     isHolding: false,
     turn: false,
+    setsWon: [],
 
     drawn: function (drawnResult) {
         console.log('drawn', this, this.user.id, drawnResult);
         this.get('openCards').pushObject(drawnResult.card);
         this.set('total', drawnResult.total);
+    },
+
+    wonSet: function () {
+        this.setsWon.pushObject({});
     },
 
     playedCard: function (args) {
@@ -110,6 +118,7 @@ App.Player = Ember.Object.extend({
         this.on('drawn', 'drawn');
         this.on('turn', 'turn');
         this.on('playedCard', 'playedCard');
+        this.on('wonSet', 'wonSet');
     }
 });
 

@@ -1,73 +1,51 @@
 ﻿var ID = require('./id.js'),
-    sideDeckService = require('./sideDeckService.js'),
     util = require('util'),
     Player = require('./player.js'),
-    Deck = require('./deck.js'),
+    Set = require('./set.js'),
 
-    Match = function (player1, name) {
-        
+    Match = function (name) {
         this.id = ID();
         this.name = name;
         
-        player1.match = this;
-        
-        var match = this,
-            player2 = {},
-            deck = {},
-            currentPlayer,
+        var player1 = null,
+            player2 = null,
+            currentSet,
 
-            assignHandDecks = function () {
-                player1.handDeck = sideDeckService.getSideDeck(player1.user);
-                player1.emit('handDeck', player1.handDeck);
-                player1.emit('handDeck', new Array(player1.handDeck.length), player2.socket);
-                
-                player2.handDeck = sideDeckService.getSideDeck(player2.user);
-                player2.emit('handDeck', player2.handDeck);
-                player2.emit('handDeck', new Array(player2.handDeck.length), player1.socket);
+            attachSocketListener = function (event, handler) {
+                player1.socket.on(event, handler);
+                player2.socket.on(event, handler);
             },
 
-            attachListener = function (event, handler) {
-                player1.on(event, handler);
-                player2.on(event, handler);
-            },
-
-            playHandCard = function (args) {
-                console.log('playHandCard', arguments, this);
-                if (isActingSocketCurrentPlayer(this)) {
-                    var player = getPlayerFromSocket(this);
-                    if (player.hasPlayedHandCardThisTurn) {
-                        this.emit('alert', "You've already played a hand card this turn.");
+            attachSocketListeners = function () {
+                attachSocketListener('endTurn', function () {
+                    var sendingPlayer = getPlayerFromSocket(this);
+                    if (!sendingPlayer.turn) {
+                        emit('alert', "Not your turn!");
                         return;
                     }
-                    var card = player.handDeck[args.index];
-                    if (!card.value === args.card.value) {
-                        this.emit('alert', "Your handdeck doesn't contain a card with the value " + card.value + ". Are you cheating?");
-                        return;
+                    currentSet.nextTurn();
+                });
+                attachSocketListener('playHandCard', function (args) {
+                    console.log('playHandCard', arguments, this);
+                    if (isSocketCurrentPlayer(this)) {
+                        currentSet.currentPlayer.playHandCard(args);
                     }
-                    player.hasPlayedHandCardThisTurn = true;
-                    player.handDeck.splice(args.index, 1);
-                    player.emitPublic('playedCard', args);
-                    player.onCardDrawn(card);
-                    return;
-                }
+                });
+                attachSocketListener('hold', function () {
+                    if (isSocketCurrentPlayer(this)) {
+                        currentSet.currentPlayer.setHolding();
+                        currentSet.nextTurn();
+                    }
+                });
             },
-
+            
             emit = function (event, content) {
                 player1.socket.emit(event, content);
                 player2.socket.emit(event, content);
             },
 
-            swapPlayers = function () {
-                // swap players
-                
-                console.log('swapping players. current: ', currentPlayer.user.id);
-                currentPlayer = currentPlayer === player1 ?
-                    player2 : player1;
-                console.log('swapped players. current: ', currentPlayer.user.id);
-            },
-
-            isActingSocketCurrentPlayer = function (socket) {
-                var currentIsActive = currentPlayer.user.id === getPlayerFromSocket(socket).user.id;
+            isSocketCurrentPlayer = function (socket) {
+                var currentIsActive = currentSet.currentPlayer.user.id === getPlayerFromSocket(socket).user.id;
                 console.log('current is active', currentIsActive);
                 return currentIsActive;
             },
@@ -78,111 +56,74 @@
                 return player;
             },
 
-            hold = function () {
-                if (isActingSocketCurrentPlayer(this)) {
-                    currentPlayer.setHolding();
-                    nextTurn();
-                }
-            },
-
-            checkWin = function () {
-                console.log('match.js checkWin ', arguments);
-            },
-        
-            nextTurn = function () {
-                
-                if (!currentPlayer) {
-                    // first round
-                    // TODO Properly determine who starts
-                    currentPlayer = Math.random() < 0.5 ? player1 : player2;
+            onSetEnded = function (setEndArgs) {
+                var startingPlayer;
+                if (setEndArgs.hasWinner) {
+                    // the winning player starts
+                    startingPlayer = player1.user.id === setEndArgs.winner.id ? player1 : player2;
+                    setEndArgs.getWinningPlayer().emitPublic('wonSet');
                 } else {
-                    currentPlayer.setTurn(false);
-                    if (currentPlayer.total > 20) {
-                        emit('alert', currentPlayer.user.name + " LOSES! he drew more than 20 this round!");
-                        return;
-                    }
-                    swapPlayers();
-                    if (currentPlayer.isHolding) {
-                        // current player is holding - swap back again
-                        console.log('current player is holding');
-                        swapPlayers();
-                        if (currentPlayer.isHolding) {
-                            console.log('both players is holding');
-                            // both holding
-                            checkWin();
-                            return;
-                        }
-                    }
+                    // on a tie the player who didn't start the last set starts
+                    startingPlayer = player1.user.id === currentSet.startingPlayer.user.id ? player2 : player1;
                 }
-                
-                var card = deck.draw();
-                console.log('match.js card drawn', card);
-                currentPlayer.onCardDrawn(card);
-                currentPlayer.setTurn(true);
-                
-                
-                if (currentPlayer.total === 20) {
-                    // auto hold this player and start new turn switching to the other player
-                    console.log('autoHOlding');
-                    currentPlayer.setHolding();
-                    nextTurn();
-                }
-                
+                emit('set.ended', setEndArgs);
+                startNewSet(startingPlayer);
             },
-
-            attachListeners = function () {
-                attachListener('endTurn', function () {
-                    var sendingPlayer = getPlayerFromSocket(this);
-                    if (!sendingPlayer.turn) {
-                        this.emit('alert', "Not your turn!");
-                        return;
-                    }
-                    nextTurn();
-                });
-                attachListener('playHandCard', playHandCard);
-                attachListener('hold', hold);
+            
+            startNewSet = function (startingPlayer) {
+                if (currentSet) {
+                    currentSet.dispose();
+                    currentSet.removeListener('setEnded', onSetEnded);
+                }
+                currentSet = new Set(player1, player2);
+                currentSet.on('setEnded', onSetEnded);
+                
+                currentSet.start(startingPlayer);
             };
         
-        player1.socket.emit('match.joined', this);
         
         this.emitPublicPlayerAction = function (player, event, content) {
             console.log('match.js emitPUblicPlayerAction', event, content);
-            player.emit(event, content, player1.socket);
-            player.emit(event, content, player2.socket);
+            player.emitEvent(event, content, player1.socket);
+            player.emitEvent(event, content, player2.socket);
         };
         
-        this.onPlayerJoined = function (opponent) {
-            player2 = opponent;
-            player2.match = this;
+        this.onPlayerJoined = function (player) {
+            console.log(player.__proto__);
+            // override the emit method to also emit to socket
             
-            console.log('match.js newPlayer', player2.user);
-            player1.socket.emit('opponent.joined', player2.user);
             
-            player2.socket.emit('match.joined', this);
-            player2.socket.emit('opponent.joined', player1.user);
+            console.log('match.js newPlayer', player.user);
             
-            deck = new Deck();
-            nextTurn();
+            player.match = this;
+            player.socket.emit('match.joined', this);
             
-            assignHandDecks();
-            attachListeners();
-            //console.log('match.js', players);
-            //console.log('match.js onPlayerJoined', arguments);
-            // TODO get tabledeck
-            // TODO decide on who starts
+            if (!player1) {
+                player1 = player;
+            } else if (!player2) {
+                // opponent joined - tell everyone!
+                player2 = player;
+                player1.socket.emit('opponent.joined', player2.user);
+                player2.socket.emit('opponent.joined', player1.user);
+                
+                // let's go
+                var startingPlayer = Math.random() < 0.5 ? player1 : player2;
+                startNewSet(startingPlayer);
+                
+                attachSocketListeners();
+            } else {
+                player.socket.emit('alert', "This match is full");
+            }
         };
     };
-
-Player.prototype.on = function (event, handler) {
-    this.socket.on(event, handler);
-};
 
 Player.prototype.emitPublic = function (event, content) {
     this.match.emitPublicPlayerAction(this, event, content);
 };
 
-Player.prototype.onCardDrawn = function (card) {
+Player.prototype.onCardPlayed = function (card) {
     this.total += card.value;
+    this.openCards.push(card);
     
     this.emitPublic('drawn', {
         card: card,
@@ -192,30 +133,52 @@ Player.prototype.onCardDrawn = function (card) {
 
 Player.prototype.hasPlayedHandCardThisTurn = false;
 
+Player.prototype.playHandCard = function (args) {
+    if (this.hasPlayedHandCardThisTurn) {
+        this.socket.emit('alert', "You've already played a hand card this turn.");
+        return;
+    }
+    var card = this.handDeck[args.index];
+    if (!card.value === args.card.value) {
+        this.socket.emit('alert', "Your handdeck doesn't contain a card with the value " + card.value + ". Are you cheating?");
+        return;
+    }
+    this.hasPlayedHandCardThisTurn = true;
+    this.handDeck.splice(args.index, 1);
+    this.emitPublic('playedCard', args);
+    this.onCardPlayed(card);
+}
+
 Player.prototype.setTurn = function (isHisTurn) {
     if (isHisTurn) {
         this.hasPlayedHandCardThisTurn = false;
     }
-    this.emitPublic('turn', isHisTurn);
-    this.turn = isHisTurn;
+    if (this.set('turn', isHisTurn)) {
+        this.emitPublic('turn', isHisTurn);
+    }
 };
 
-Player.prototype.setHolding = function () {
-    this.isHolding = true;
-    this.emitPublic('holding', true);
+Player.prototype.set = function (variableName, value) {
+    if (this[variableName] !== value) {
+        this[variableName] = value;
+        return true;
+    }
+    return false;
+};
+
+Player.prototype.setHolding = function (isHolding) {
+    // if a parameter was passed in use it - else set it to true
+    isHolding = isHolding === undefined ? true : isHolding;
+    console.log("player.setHolding", isHolding);
+    if (this.set('isHolding', isHolding)) {
+        this.emitPublic('holding', this.isHolding);
+    }
 }
 
-Player.prototype.emit = function (event, content, socket) {
-    if (!socket) {
-        console.log("player emit socket using player socket");
-        socket = this.socket;
-    } else {
-        console.log("player emit socket using provideds socket");
-    }
-    event = this.user.id + '.' + event;
-    console.log('player.emit: ', event, content);
-    socket.emit(event, content);
-};
+Player.prototype.reset = function () {
+    this.setHolding(false);
+    this.total = 0;
+}
 
 module.exports = Match;
 

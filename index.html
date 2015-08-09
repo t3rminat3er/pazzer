@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="style/style.css" />
 </head>
 <body>
-<script type="text/x-handlebars">
+    <script type="text/x-handlebars">
         {{outlet}}
         {{outlet 'modal'}}
     </script>
@@ -22,7 +22,7 @@
         </div>
     </script>
 
-<!--LOGIN-->
+    <!--LOGIN-->
     <script type="text/x-handlebars" data-template-name="login">
         <form class="loginBox" id="loginBox" {{action "login" on="submit"}}>
             <p>
@@ -100,7 +100,7 @@
 
 
     <!--MATCH-->
-    <script type="text/x-handlebars" data-template-name="match">
+<script type="text/x-handlebars" data-template-name="match">
         <!--<audio id="player" src="sounds/menu_music.mp3" autoplay loop></audio>-->
         <div>
             <button onclick="document.getElementById('player').play()">Play</button>
@@ -135,14 +135,14 @@
             </div>
             <div class="gameSetBox">
                 <div class="playerSets" id="player2CurrentSets">
-                    <div class="sets" id="player2Set1"></div>
-                    <div class="sets" id="player2Set2"></div>
-                    <div class="sets" id="player2Set3"></div>
+                    {{#each opponent.setsWon key="@index" as |set|}}
+                    <div class="won-set"></div>
+                    {{/each}}
                 </div>
                 <div class="playerSets" id="player1CurrentSets">
-                    <div class="sets" id="player1Set1"></div>
-                    <div class="sets" id="player1Set2"></div>
-                    <div class="sets" id="player1Set3"></div>
+                    {{#each player.setsWon key="@index" as |set| }}
+                    <div class="won-set"></div>
+                    {{/each}}
                 </div>
             </div>
             <div class="playedCardsBox">

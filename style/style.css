@@ -298,6 +298,10 @@ body {
         margin-bottom: 0.5em;
     }
 
+    .won-set {
+    background-color: greenyellow;
+    }
+
 #player2Set1 {
     background-color: greenyellow;
 }
