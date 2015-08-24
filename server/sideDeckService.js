@@ -1,5 +1,5 @@
 ﻿var socketIO = require('./socketServer.js').io,
-    db = require('./repositories/dataBase.js');
+    db = require('./repositories/dataBase.js'),
     userRepo = require('./repositories/userRepository.js');
 
 var getHandCards = function(player) {
@@ -17,7 +17,7 @@ var getHandCards = function(player) {
         return cards;
     },
 
-    getAvailableSideDeckCards = function () {
+    getAvailableSideDeckCards = function() {
         var user = this.user;
         if (!user) {
             this.emit('error.route', 'login');
@@ -34,10 +34,19 @@ var getHandCards = function(player) {
             this.emit('error.route', 'login');
             return;
         }
-        user.sideDecks.push(new db.SideDeck({ sideDeck}));
+        user.sideDecks.push(new db.SideDeck(sideDeck));
         user.save();
     },
-    
+
+    getSideDecks = function() {
+        var user = this.user;
+        if (!user) {
+            this.emit('error.route', 'login');
+            return;
+        }
+        this.emit('sideDeck.all', user.sideDecks);
+    },
+
     setSideDeck = function (sideDeck) {
         var user = this.user;
         if (!user) {
@@ -51,6 +60,7 @@ var getHandCards = function(player) {
 socketIO.on('connection', function (socket) {
     socket.on('sideDeck.getAvailableCards', getAvailableSideDeckCards);
     socket.on('sideDeck.set', setSideDeck);
+    socket.on('sideDeck.getAll', getSideDecks);
     socket.on('sideDeck.create', createSideDeck);
 });
 

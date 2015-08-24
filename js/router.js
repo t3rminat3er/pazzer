@@ -16,6 +16,7 @@ App.SideDeckRoute = Ember.Route.extend({
     setupController: function (controller, model) {
         console.log("sidedeckroute", controller);
         controller.socket.emit('sideDeck.getAvailableCards');
+        controller.socket.emit('sideDeck.getAll');
     }
 });
 
