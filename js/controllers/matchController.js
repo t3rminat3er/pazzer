@@ -4,17 +4,24 @@
     opponent: {},
     player: {},
     match: {},
+    message: "",
 
-    setPlayer: function(playerName, user) {
+    setPlayer: function (playerName, user) {
         this.set(playerName, App.Player.create({
             user: user,
             socket: this.socket.socket
         }));
     },
 
-    resetPlayer: function(player) {
-        player.set('openCards', []);
+    resetPlayer: function (player) {
+        console.log('resetting player', player.user.name);
+        player.get('openCards').clear();
         player.set('total', 0);
+    },
+
+    showMessage: function (message) {
+        this.send('openModal', 'match.message');
+        this.set('message', message);
     },
 
     actions: {
@@ -62,11 +69,20 @@
             this.setPlayer('opponent', user);
         },
 
-        'set.ended': function(args) {
+        'match.ended': function (args) {
+            this.showMessage(args.reason);
+            history.back();
+        },
+
+        'set.ended': function (args) {
             console.log('set.ended ', arguments);
+            if (args.hasWinner) {
+                var winner = this.player.user.id === args.winner.id ? this.player : this.opponent;
+                winner.get('setsWon').pushObject({});
+            }
             this.resetPlayer(this.player);
             this.resetPlayer(this.opponent);
-            alert(args.reason);
+            this.showMessage(args.reason);
         }
     }
 });
@@ -87,10 +103,6 @@ App.Player = Ember.Object.extend({
         this.set('total', drawnResult.total);
     },
 
-    wonSet: function () {
-        this.setsWon.pushObject({});
-    },
-
     playedCard: function (args) {
         var localCard = this.handDeck[args.index];
         console.log('played card', localCard);
@@ -100,11 +112,7 @@ App.Player = Ember.Object.extend({
             }
             this.handDeck.removeObject(localCard);
         } else {
-            // opponent player - cards have no value
-            var newHandDeck = [];
             this.get('handDeck').removeAt(args.index);
-            //newHandDeck.length = this.handDeck.length - 1;
-            //this.set('handDeck', newHandDeck);
         }
     },
 
@@ -112,13 +120,13 @@ App.Player = Ember.Object.extend({
         console.log('player init', this);
         this.set('openCards', []);
         this.set('handDeck', []);
+        this.set('setsWon', []);
 
         this.on('holding', 'isHolding');
         this.on('handDeck', 'handDeck');
         this.on('drawn', 'drawn');
         this.on('turn', 'turn');
         this.on('playedCard', 'playedCard');
-        this.on('wonSet', 'wonSet');
     }
 });
 

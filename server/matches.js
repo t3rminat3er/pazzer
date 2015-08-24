@@ -31,9 +31,8 @@
                 console.log('matches.js', 'match found');
                 // remove - match is no longer open
                 match.onPlayerJoined(new Player(this));
-                
-                // TODO uncomment - testing
-                //socketServer.io.emit('matchClosed', match);
+
+                socketServer.io.emit('matchClosed', match);
                 openMatches.splice(i, 1);
                 return;
             }

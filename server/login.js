@@ -1,35 +1,31 @@
 ﻿var guests = [];
 var onlinePlayers = [];
+var users;
 
 var socketServer = require('./socketServer.js'),
+    userRepo = require('./repositories/userRepository.js'),
+    db = require('./repositories/dataBase.js'),
     ID = require('./id.js');
+
 
 socketServer.io.on('connection', function (socket) {
     socket.on('disconnect', onSocketDisconnect);
     socket.on('guestLogin', onGuestLogin);
+    socket.on('login', onUserLogin);
 });
 
-var addDummyPlayers = function () {
-    setTimeout(function () {
-        console.log("adding dummy player");
-        var random = Math.random();
-        onUserLoggedIn({ name: "Test player " + random, id: random }, {});
-        addDummyPlayers();
-    }, 50000);
+var onUserLoggedIn = function (user, socket) {
+    var serverUser = {
+        user: user,
+        socket: socket
+    };
+    socket.user = user;
+    onlinePlayers.push(serverUser);
+    if (socket && socket.emit) {
+        socket.emit('loggedIn', user);
+    }
+    socketServer.io.emit('playerCameOnline', user);
 },
-
-    onUserLoggedIn = function (user, socket) {
-        var serverUser = {
-            user: user,
-            socket: socket
-        };
-        socket.user = user;
-        onlinePlayers.push(serverUser);
-        if (socket && socket.emit) {
-            socket.emit('loggedIn', user);
-        }
-        socketServer.io.emit('playerCameOnline', user);
-    },
 
     onUserLoggedOut = function (serverUser) {
         if (!serverUser) {
@@ -68,10 +64,9 @@ var addDummyPlayers = function () {
     },
 
     onGuestLogin = function () {
-        var guest = {
-            isGuest: true,
+        var guest = new db.User({
             id: ID()
-        };
+        });
         var i = 1;
         for (; i < guests.length; i++) {
             if (!guests[i]) {
@@ -83,6 +78,17 @@ var addDummyPlayers = function () {
         guests[i] = guest;
     },
 
+    onUserLogin = function (credentials) {
+        var socket = this;
+        userRepo.get(credentials, function (user) {
+            if (user) {
+                onUserLoggedIn({ name: user.username, id: user.id }, socket);
+            } else {
+                socket.emit('alert', 'Nutzername oder Passwort falsch.');
+            }
+        });
+    },
+
     getOnlinePlayers = function () {
         return onlinePlayers.map(function (serverUser) {
             return serverUser.user;
@@ -90,7 +96,6 @@ var addDummyPlayers = function () {
     };
 
 
-addDummyPlayers();
 
 module.exports = {};
 module.exports.getOnlinePlayers = getOnlinePlayers;

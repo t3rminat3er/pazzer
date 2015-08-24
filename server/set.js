@@ -1,6 +1,7 @@
 ﻿var Deck = require('./deck.js'),
     sideDeckService = require('./sideDeckService.js'),
     events = require('events'),
+    ID = require('./id.js'),
 
     SetEndArgs = function (hasWinner, winningPlayer, reason) {
         this.hasWinner = hasWinner;
@@ -18,13 +19,14 @@
         var deck = {},
             self = this,
             isOver = false,
+            id = ID(),
 
             assignHandDecks = function () {
-                player1.handDeck = sideDeckService.getSideDeck(player1.user);
+                player1.handDeck = sideDeckService.getHandCards(player1.user);
                 player1.emitEvent('handDeck', player1.handDeck);
                 player1.emitEvent('handDeck', new Array(player1.handDeck.length), player2.socket);
                 
-                player2.handDeck = sideDeckService.getSideDeck(player2.user);
+                player2.handDeck = sideDeckService.getHandCards(player2.user);
                 player2.emitEvent('handDeck', player2.handDeck);
                 player2.emitEvent('handDeck', new Array(player2.handDeck.length), player1.socket);
             },
@@ -44,11 +46,12 @@
                 var reason = "";
                 if (self.currentPlayer.total > 20) {
                     // bust
+                    console.log("player is bust", self.currentPlayer.user.name, self.currentPlayer.total);
                     reason = self.currentPlayer.user.name + " drew more than 20 this round!";
                     setEndArgs = new SetEndArgs(true, getNotCurrentPlayer(), reason);
                 } else if (player1.isHolding && player2.isHolding) {
                     if (player1.total === player2.total) {
-                        // draw
+                        // a tie
                         reason = "You both have the same score. It's a TIE!";
                         setEndArgs = new SetEndArgs(false, null, reason);
                     } else {
@@ -65,7 +68,7 @@
                     }
                 }
                 
-                console.log('match.js checkWin ', setEndArgs);
+                console.log('set'+id+'.checkWin ', setEndArgs);
                 if (setEndArgs) {
                     isOver = true;
                     self.emit('setEnded', setEndArgs);
@@ -81,14 +84,13 @@
 
             swapPlayers = function () {
                 // swap players
-                console.log('swapping players. current: ', self.currentPlayer.user.id);
+                console.log('set ' + id + ' current player: ', self.currentPlayer.user.id);
                 self.currentPlayer = getNotCurrentPlayer();
-                console.log('swapped players. current: ', self.currentPlayer.user.id);
+                console.log('set ' + id + ' current player: ', self.currentPlayer.user.id);
             },
 
             onCardPlayed = function () {
                 var player = this;
-                console.log('on card played', player.user, this);
                 
                 if (player.total === 20) {
                     // auto hold this player and start new turn switching to the other player
@@ -124,10 +126,16 @@
         };
         
         this.dispose = function () {
-
+            isOver = true;
+            player1.removeListener('drawn', onCardPlayed);
+            player2.removeListener('drawn', onCardPlayed);
         };
         
         this.nextTurn = function () {
+            if (isOver) {
+                return;
+            }
+            
             this.currentPlayer.setTurn(false);
             if (checkWin()) {
                 return;

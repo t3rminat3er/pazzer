@@ -2,27 +2,30 @@
     Socket: EmberSockets.extend({
         host: 'localhost',
         port: 34251,
-        controllers: ['login', 'matches', 'players', 'match', 'createMatch'],
+        controllers: ['login', 'matches', 'players', 'match', 'createMatch', 'sideDeck', 'app'],
         autoConnect: true,
         init: function() {
             this._super();
+            this.self = this;
             this.socket.on('alert', function (msg) {
                 alert(msg);
                 console.log('application.js', msg);
             });
         }
     }),
-    LOG_TRANSITIONS: true, LOG_TRANSITIONS_INTERNAL: true
+    LOG_TRANSITIONS: true,
+    LOG_TRANSITIONS_INTERNAL: true
 });
 
 App.ApplicationRoute = Ember.Route.extend({
     actions: {
         openModal: function (modalName, model) {
-            console.log("OPEN MODAL");
-            this.controllerFor(modalName).set('model', model);
+            var controllerFor = this.controllerFor(modalName);
+            console.log("OPEN MODAL", modalName, controllerFor, this);
             return this.render(modalName, {
                 into: 'application',
-                outlet: 'modal'
+                outlet: 'modal',
+                controller: controllerFor
             });
         },
 

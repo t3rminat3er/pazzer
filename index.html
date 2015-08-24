@@ -28,7 +28,6 @@
             <p>
                 <img src="img/layout/layerEmail.png" alt="E-Mail" /><br />
                 {{input value=username type="text" class="textfieldLogin" id="email"}}
-                <!--<input type="text" name="email" id="email" class="textfieldLogin">-->
             </p>
             <br /><br />
             <p>
@@ -59,7 +58,7 @@
 
             </div>
             <button class="lobbyButton" {{action 'openModal' 'createMatch'}}>CREATE GAME</button>
-            <button class="lobbyButton">DECK EDITOR</button>
+            <button class="lobbyButton">{{#link-to 'sideDeck'}}DECK EDITOR{{/link-to}}</button>
             <button class="lobbyButton">LOGOUT</button>
         </div>
     </script>
@@ -68,9 +67,15 @@
         {{#modal-dialog action="closeModal"}}
         <h3 class="flush--top">Create Match</h3>
         <p>Enter the match name:</p>
-        <p>{{username}}</p>
         <p>{{input value=name}}</p>
         <button {{action 'createMatch'}}>Create</button>
+        {{/modal-dialog}}
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="match/message">
+        {{#modal-dialog action="closeModal"}}
+        <h2>{{message}}</h2>
+        <p>{{player.user.name}}</p>
         {{/modal-dialog}}
     </script>
 
@@ -98,9 +103,50 @@
         </ul>
     </script>
 
+    <!--SIDE DECK EDITOR-->
+    <script type="text/x-handlebars" data-template-name="sideDeck">
+        <div class="deckeditorBox">
+            <button class="deckeditorButton" id="buttonMyCollection">My Collection</button>
+            <button class="deckeditorButton" id="buttonUnlockableCards">Unlockable Cards</button>
+            <div class="selectedCardsBox">
+                <span class="deckname">DECKNAME</span>
+                <div style="margin-bottom:24em">
+                    <card class="currentDeckCard" id="currentDeckCard01"></card>
+                    <card class="currentDeckCard" id="currentDeckCard02"></card>
+                    <card class="currentDeckCard" id="currentDeckCard03"></card>
+                    <card class="currentDeckCard" id="currentDeckCard04"></card>
+                    <card class="currentDeckCard" id="currentDeckCard05"></card>
+                    <card class="currentDeckCard" id="currentDeckCard06"></card>
+                    <card class="currentDeckCard" id="currentDeckCard07"></card>
+                    <card class="currentDeckCard" id="currentDeckCard08"></card>
+                    <card class="currentDeckCard" id="currentDeckCard09"></card>
+                    <card class="currentDeckCard" id="currentDeckCard10"></card>
+                </div>
+                <button class="deckeditorButton" id="save">SAVE</button><br />
+            </div>
+            <div class="cardOverviewBox">
+                {{#each selectedSideDeck.cards key="@index" as |card index|}}
+                <div class="card card-{{card.name}}" {{action 'remove' index}}></div>
+                {{/each}}
+            </div>
+            <span class="filter">FILTER</span>
+            <div class="filterBox">
+                <button class="filterCards" id="allCardsFilter">All Cards</button>
+                <button class="filterCards" id="plusCardsFilter">+ Cards</button>
+                <button class="filterCards" id="minusCardsFilter">- Cards</button>
+                <button class="filterCards" id="plusMinusCardsFilter">+- Cards</button>
+                <button class="filterCards" id="goldenCardsFilter">Golden Cards</button>
+
+                {{#each availableCards as |card|}}
+                <div class="card card-{{card.name}}" {{action 'add' card}}></div>
+                {{/each}}
+            </div>
+        </div>
+    </script>
+
 
     <!--MATCH-->
-<script type="text/x-handlebars" data-template-name="match">
+    <script type="text/x-handlebars" data-template-name="match">
         <!--<audio id="player" src="sounds/menu_music.mp3" autoplay loop></audio>-->
         <div>
             <button onclick="document.getElementById('player').play()">Play</button>
@@ -136,12 +182,12 @@
             <div class="gameSetBox">
                 <div class="playerSets" id="player2CurrentSets">
                     {{#each opponent.setsWon key="@index" as |set|}}
-                    <div class="won-set"></div>
+                    <div class="set won-set"></div>
                     {{/each}}
                 </div>
                 <div class="playerSets" id="player1CurrentSets">
                     {{#each player.setsWon key="@index" as |set| }}
-                    <div class="won-set"></div>
+                    <div class="set won-set"></div>
                     {{/each}}
                 </div>
             </div>
@@ -195,5 +241,7 @@
     <script src="js/services/sideDeckService.js"></script>
     <script src="js/controllers/matchController.js"></script>
     <script src="js/controllers/createMatchController.js"></script>
+    <script src="js/controllers/sideDeckController.js"></script>
+    <script src="js/controllers/appController.js"></script>
 </body>
 </html>

@@ -1,4 +1,6 @@
-﻿var Deck = function () {
+﻿var Card = require('./cards.js').Card;
+
+var Deck = function () {
     var cards = [],
         cardsDrawn = 0;
     
@@ -28,9 +30,6 @@
         
 };
 
-Card = function (value) {
-    this.value = value;
-    this.name = value;
-};
+
 
 module.exports = Deck;

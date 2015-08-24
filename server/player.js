@@ -11,15 +11,15 @@ var events = require('events'),
         this.match = {};
         this.turn = false;
         this.openCards = [];
+        this.setsWon = 0;
         
         this.emitEvent = function (event, content, socket) {
-            console.log('player.super.emit: ', event, content);
-            this.emit(event, content);
-            if (!socket) {
-                console.log("player emit socket using player socket");
+            if (!socket || socket === this.socket) {
+                // only emit if it is intended to be emitted as self
+                this.emit(event, content);
                 socket = this.socket;
             } else {
-                console.log("player emit socket using provideds socket");
+                // use provided socket
             }
             event = this.user.id + '.' + event;
             console.log('player.emit: ', event, content);

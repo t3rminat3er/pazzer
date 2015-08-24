@@ -1,7 +1,22 @@
 ﻿App.Router.map(function () {
     this.route('login', { path: '/' });
     this.route('lobby', { path: '/lobby' });
-    this.route('match', { path: '/match/:id' });
+    this.route('match', { path: '/match/:id', function() {
+        this.route('message');
+    }
+    });
+    this.route('sideDeck', { path: '/sideDeck' });
+});
+
+App.MatchMessageRoute = Ember.Route.extend({
+    controllerName: 'match'
+});
+
+App.SideDeckRoute = Ember.Route.extend({
+    setupController: function (controller, model) {
+        console.log("sidedeckroute", controller);
+        controller.socket.emit('sideDeck.getAvailableCards');
+    }
 });
 
 
@@ -20,6 +35,8 @@ App.LobbyRoute = Ember.Route.extend({
         });
     }
 });
+
+
 
 App.MatchRoute = Ember.Route.extend({
     setupController: function (controller, model) {

@@ -14,7 +14,7 @@
             attachSocketListener = function (event, handler) {
                 player1.socket.on(event, handler);
                 player2.socket.on(event, handler);
-            },
+            },s
 
             attachSocketListeners = function () {
                 attachSocketListener('endTurn', function () {
@@ -58,15 +58,25 @@
 
             onSetEnded = function (setEndArgs) {
                 var startingPlayer;
+                emit('set.ended', setEndArgs);
                 if (setEndArgs.hasWinner) {
                     // the winning player starts
                     startingPlayer = player1.user.id === setEndArgs.winner.id ? player1 : player2;
-                    setEndArgs.getWinningPlayer().emitPublic('wonSet');
+                    
+                    var winningPlayer = setEndArgs.getWinningPlayer();
+                    winningPlayer.setsWon++;
+                    if (winningPlayer.setsWon === 3) {
+                        // player won match
+                        emit('match.ended', {
+                            winner: setEndArgs.winner,
+                            reason: setEndArgs.winner.name + " Won this match!"
+                        });
+                        return;
+                    }
                 } else {
                     // on a tie the player who didn't start the last set starts
                     startingPlayer = player1.user.id === currentSet.startingPlayer.user.id ? player2 : player1;
                 }
-                emit('set.ended', setEndArgs);
                 startNewSet(startingPlayer);
             },
             
@@ -159,11 +169,9 @@ Player.prototype.setTurn = function (isHisTurn) {
 };
 
 Player.prototype.set = function (variableName, value) {
-    if (this[variableName] !== value) {
-        this[variableName] = value;
-        return true;
-    }
-    return false;
+    var oldValue = this[variableName];
+    this[variableName] = value;
+    return oldValue !== value;
 };
 
 Player.prototype.setHolding = function (isHolding) {
@@ -178,6 +186,7 @@ Player.prototype.setHolding = function (isHolding) {
 Player.prototype.reset = function () {
     this.setHolding(false);
     this.total = 0;
+    this.openCards = [];
 }
 
 module.exports = Match;

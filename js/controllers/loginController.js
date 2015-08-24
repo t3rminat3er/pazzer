@@ -1,5 +1,7 @@
 ﻿App.LoginController = EmberSockets.extend({
-    
+    username: null,
+    password: null,
+
     init: function() {
         this._super();
     },
@@ -13,8 +15,10 @@
     
     actions: {
         login: function () {
-            console.log("login action clicked", loginFailed);
-
+            this.socket.emit('login', {
+                username: this.get('username'),
+                password: this.get('password')
+            });
             // TODO handle login
             // source http://blog.trackets.com/2013/05/23/how-to-write-a-login-form.html
             //$.post("/login", {
