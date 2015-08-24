@@ -77,7 +77,7 @@
         'set.ended': function (args) {
             console.log('set.ended ', arguments);
             if (args.hasWinner) {
-                var winner = this.player.user.id === args.winner.id ? this.player : this.opponent;
+                var winner = this.player.user._id === args.winner._id ? this.player : this.opponent;
                 winner.get('setsWon').pushObject({});
             }
             this.resetPlayer(this.player);
@@ -98,7 +98,7 @@ App.Player = Ember.Object.extend({
     setsWon: [],
 
     drawn: function (drawnResult) {
-        console.log('drawn', this, this.user.id, drawnResult);
+        console.log('drawn', this, this.user._id, drawnResult);
         this.get('openCards').pushObject(drawnResult.card);
         this.set('total', drawnResult.total);
     },
@@ -141,7 +141,7 @@ App.Player.reopen({
                 Ember.set(this.player, this.handler, content);
             }
         };
-        event = this.user.id + "." + event;
+        event = this.user._id + "." + event;
         console.log('player registering on', event, handlerName, this);
         this.socket.on(event, response.bind({ event: event, player: this, handler: handlerName }));
     }

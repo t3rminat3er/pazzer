@@ -1,5 +1,5 @@
 ﻿App.SideDeck = Ember.Object.extend({
-    title: null,
+    name: null,
     cards: [],
 
     init: function () {
@@ -25,6 +25,10 @@ App.SideDeckController = Ember.Controller.extend({
         remove: function (index) {
             console.log(arguments);
             this.selectedSideDeck.cards.removeAt(index);
+        },
+
+        save: function() {
+            this.socket.emit('sideDeck.set', this.get('selectedSideDeck'));
         }
     },
 

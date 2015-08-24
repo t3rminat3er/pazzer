@@ -104,29 +104,22 @@
     </script>
 
     <!--SIDE DECK EDITOR-->
-    <script type="text/x-handlebars" data-template-name="sideDeck">
+<script type="text/x-handlebars" data-template-name="sideDeck">
         <div class="deckeditorBox">
             <button class="deckeditorButton" id="buttonMyCollection">My Collection</button>
             <button class="deckeditorButton" id="buttonUnlockableCards">Unlockable Cards</button>
             <div class="selectedCardsBox">
                 <span class="deckname">DECKNAME</span>
                 <div style="margin-bottom:24em">
-                    <card class="currentDeckCard" id="currentDeckCard01"></card>
-                    <card class="currentDeckCard" id="currentDeckCard02"></card>
-                    <card class="currentDeckCard" id="currentDeckCard03"></card>
-                    <card class="currentDeckCard" id="currentDeckCard04"></card>
-                    <card class="currentDeckCard" id="currentDeckCard05"></card>
-                    <card class="currentDeckCard" id="currentDeckCard06"></card>
-                    <card class="currentDeckCard" id="currentDeckCard07"></card>
-                    <card class="currentDeckCard" id="currentDeckCard08"></card>
-                    <card class="currentDeckCard" id="currentDeckCard09"></card>
-                    <card class="currentDeckCard" id="currentDeckCard10"></card>
+                    {{#each selectedSideDeck.cards key="@index" as |card index|}}
+                    <card class="card currentDeckCard card-{{card.name}}" {{action 'remove' index}}></card>
+                    {{/each}}
                 </div>
-                <button class="deckeditorButton" id="save">SAVE</button><br />
+                <button class="deckeditorButton" {{action save}} id="save">SAVE</button><br />
             </div>
             <div class="cardOverviewBox">
-                {{#each selectedSideDeck.cards key="@index" as |card index|}}
-                <div class="card card-{{card.name}}" {{action 'remove' index}}></div>
+                {{#each availableCards as |card|}}
+                <div class="card card-{{card.name}}" {{action 'add' card}}></div>
                 {{/each}}
             </div>
             <span class="filter">FILTER</span>
@@ -135,11 +128,7 @@
                 <button class="filterCards" id="plusCardsFilter">+ Cards</button>
                 <button class="filterCards" id="minusCardsFilter">- Cards</button>
                 <button class="filterCards" id="plusMinusCardsFilter">+- Cards</button>
-                <button class="filterCards" id="goldenCardsFilter">Golden Cards</button>
-
-                {{#each availableCards as |card|}}
-                <div class="card card-{{card.name}}" {{action 'add' card}}></div>
-                {{/each}}
+                <button class="filterCards" id="goldenCardsFilter">Golden Cards</button>              
             </div>
         </div>
     </script>
