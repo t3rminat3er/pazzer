@@ -1,4 +1,5 @@
 ﻿var socketIO = require('./socketServer.js').io,
+    db = require('./repositories/dataBase.js');
     userRepo = require('./repositories/userRepository.js');
 
 var getHandCards = function(player) {
@@ -26,9 +27,23 @@ var getHandCards = function(player) {
         console.log('sideDeckService.js getAvailableSideDeckCards ', availableCards);
         this.emit('sideDeck.availableCards', availableCards);
     },
+
+    createSideDeck = function(sideDeck) {
+        var user = this.user;
+        if (!user) {
+            this.emit('error.route', 'login');
+            return;
+        }
+        user.sideDecks.push(new db.SideDeck({ sideDeck}));
+        user.save();
+    },
     
     setSideDeck = function (sideDeck) {
         var user = this.user;
+        if (!user) {
+            this.emit('error.route', 'login');
+            return;
+        }
         console.log('setSideDeck ', arguments, this);
         var socket = this;
     };
@@ -36,6 +51,7 @@ var getHandCards = function(player) {
 socketIO.on('connection', function (socket) {
     socket.on('sideDeck.getAvailableCards', getAvailableSideDeckCards);
     socket.on('sideDeck.set', setSideDeck);
+    socket.on('sideDeck.create', createSideDeck);
 });
 
 module.exports = {};

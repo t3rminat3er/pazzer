@@ -12,12 +12,16 @@ db.once('open', function () {
 
 mongoose.connect('mongodb://localhost/pazzaak');
 
+var SideDeckSchema = new Schema({
+    name: String,
+    cards: []
+});
+
 var userSchema = new Schema({
     name: { type: String, index: { unique: true } },
     password: { type: String, required: true },
-    sideDeck: {
-        deck:[]
-    }
+    sideDecks: [SideDeckSchema],
+    currentSideDeckId: String
 });
 
 var defaultAvailableCardValues = [
@@ -30,5 +34,6 @@ userSchema.virtual('sideDeck.availableCards').get(function() {
     });
 });
 
+db.SideDeck = mongoose.model('sideDeck', SideDeckSchema);
 db.User = mongoose.model("user", userSchema);
 module.exports = db;
