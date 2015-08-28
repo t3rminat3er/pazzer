@@ -10,11 +10,12 @@
         var player1 = null,
             player2 = null,
             currentSet,
+            self = this,
 
             attachSocketListener = function (event, handler) {
                 player1.socket.on(event, handler);
                 player2.socket.on(event, handler);
-            },s
+            },
 
             attachSocketListeners = function () {
                 attachSocketListener('endTurn', function () {
@@ -58,7 +59,6 @@
 
             onSetEnded = function (setEndArgs) {
                 var startingPlayer;
-                emit('set.ended', setEndArgs);
                 if (setEndArgs.hasWinner) {
                     // the winning player starts
                     startingPlayer = player1.user.id === setEndArgs.winner.id ? player1 : player2;
@@ -77,7 +77,12 @@
                     // on a tie the player who didn't start the last set starts
                     startingPlayer = player1.user.id === currentSet.startingPlayer.user.id ? player2 : player1;
                 }
-                startNewSet(startingPlayer);
+
+                var cb = function() {
+                    emit('set.ended', setEndArgs);
+                    startNewSet(startingPlayer);
+                };
+                setTimeout(cb, 100);
             },
             
             startNewSet = function (startingPlayer) {
@@ -185,6 +190,7 @@ Player.prototype.setHolding = function (isHolding) {
 
 Player.prototype.reset = function () {
     this.setHolding(false);
+    this.setTurn(false);
     this.total = 0;
     this.openCards = [];
 }

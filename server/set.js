@@ -68,7 +68,7 @@
                     }
                 }
                 
-                console.log('set'+id+'.checkWin ', setEndArgs);
+                console.log('set' + id + '.checkWin ', setEndArgs);
                 if (setEndArgs) {
                     isOver = true;
                     self.emit('setEnded', setEndArgs);
@@ -92,12 +92,12 @@
             onCardPlayed = function () {
                 var player = this;
                 
-                if (player.total === 20) {
+                if (player.total >= 10) {
                     // auto hold this player and start new turn switching to the other player
                     console.log('autoHOlding');
                     self.currentPlayer.setHolding();
                     self.nextTurn();
-                }
+                    }
             },
 
             drawForCurrentPlayer = function () {
@@ -146,7 +146,7 @@
                 console.log('current player is holding');
                 swapPlayers();
                 if (this.currentPlayer.isHolding) {
-                    console.log('both players is holding');
+                    console.log('both players are holding');
                     // both holding - set is definitely over
                     checkWin();
                     return;

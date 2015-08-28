@@ -14,16 +14,21 @@ var events = require('events'),
         this.setsWon = 0;
         
         this.emitEvent = function (event, content, socket) {
+            var isPrivateAction;
             if (!socket || socket === this.socket) {
                 // only emit if it is intended to be emitted as self
-                this.emit(event, content);
                 socket = this.socket;
+                isPrivateAction = true;
             } else {
                 // use provided socket
             }
-            event = this.user.id + '.' + event;
-            console.log('player.emit: ', event, content);
-            socket.emit(event, content);
+            var userIdEvent = this.user.id + '.' + event;
+            console.log('player.emit: ', userIdEvent, content);
+            socket.emit(userIdEvent, content);
+
+            if (isPrivateAction) {
+                this.emit(event, content);
+            }
         };
     };
 
