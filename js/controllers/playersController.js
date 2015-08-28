@@ -14,12 +14,12 @@
         },
         playerCameOnline: function (user) {
             this.onlinePlayers.pushObject(user);
-            console.warn("player came online");
+            console.warn("player came online", user);
         },
 
         playerWentOffline: function (user) {
-            this.onlinePlayers.removeObject(user);
-            console.warn("pplayerWentOffeline");
+            this.onlinePlayers.removeObject(this.onlinePlayers.findBy('id', user.id));
+            console.warn("pplayerWentOffeline", user);
         }
     }
 

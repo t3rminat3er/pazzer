@@ -92,12 +92,12 @@
             onCardPlayed = function () {
                 var player = this;
                 
-                if (player.total >= 10) {
+                if (player.total === 20) {
                     // auto hold this player and start new turn switching to the other player
                     console.log('autoHOlding');
                     self.currentPlayer.setHolding();
                     self.nextTurn();
-                    }
+                }
             },
 
             drawForCurrentPlayer = function () {

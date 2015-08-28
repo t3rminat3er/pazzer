@@ -15,47 +15,48 @@ socketServer.io.on('connection', function (socket) {
 });
 
 var onUserLoggedIn = function (user, socket) {
-    var serverUser = {
-        user: user,
-        socket: socket
-    };
     socket.user = user;
-    onlinePlayers.push(serverUser);
+    onlinePlayers.push(user);
     if (socket && socket.emit) {
         socket.emit('loggedIn', user);
     }
     socketServer.io.emit('playerCameOnline', user);
 },
 
-    onUserLoggedOut = function (serverUser) {
-        if (!serverUser) {
+    onUserLoggedOut = function (user) {
+        if (!user) {
             return;
         }
-        console.log("on user logged out", serverUser.user);
         
-        socketServer.io.emit('playerWentOffline', serverUser.user);
+        socketServer.io.emit('playerWentOffline', user);
         
-        var index = onlinePlayers.indexOf(serverUser);
+        var index = onlinePlayers.indexOf(user);
         if (index > -1) {
             onlinePlayers.splice(index, 1);
+            console.log("on user logged out", user);
         } else {
-            console.warn("logged out user was not registered", serverUser.user);
+            console.warn("logged out user was not registered", user);
         }
     },
 
     onSocketDisconnect = function () {
+        var user = this.user;
+        if(!user){
+            return;
+        }
+        
+        onUserLoggedOut(this.user);
+        
+        // remote the guest if it was one - for unique user id and name
         for (var i = 0; i < guests.length; i++) {
             var guest = guests[i];
             if (guest) {
-                if (guest.socket === this) {
+                if (guest.id === user.id) {
                     console.log("guest disconnected", guest.name);
                     guests[i] = null;
                     return;
                 }
             }
-        }
-        if (this.user) {
-            onUserLoggedOut(this.user);
         }
     },
 
@@ -64,9 +65,7 @@ var onUserLoggedIn = function (user, socket) {
     },
 
     onGuestLogin = function () {
-        var guest = new db.User({
-            id: ID()
-        });
+        var guest = new db.User();
         var i = 1;
         for (; i < guests.length; i++) {
             if (!guests[i]) {
@@ -91,7 +90,7 @@ var onUserLoggedIn = function (user, socket) {
 
     getOnlinePlayers = function () {
         return onlinePlayers.map(function (serverUser) {
-            return serverUser.user;
+            return serverUser;
         });
     };
 
