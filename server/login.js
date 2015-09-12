@@ -79,9 +79,12 @@ var onUserLoggedIn = function (user, socket) {
 
     onUserLogin = function (credentials) {
         var socket = this;
-        userRepo.get(credentials, function (user) {
-            if (user) {
-                onUserLoggedIn({ name: user.username, id: user.id }, socket);
+        userRepo.get(credentials, function (user, error) {
+            if (error) {
+                socket.emit('alert', 'Internal Server error.');
+            }
+            else if (user) {
+                onUserLoggedIn({ name: user.name, id: user.id }, socket);
             } else {
                 socket.emit('alert', 'Nutzername oder Passwort falsch.');
             }
@@ -97,4 +100,5 @@ var onUserLoggedIn = function (user, socket) {
 
 
 module.exports = {};
+module.exports.onUserLoggedIn = onUserLoggedIn;
 module.exports.getOnlinePlayers = getOnlinePlayers;

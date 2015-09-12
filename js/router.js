@@ -6,6 +6,7 @@
     }
     });
     this.route('sideDeck', { path: '/sideDeck' });
+    this.route('register', {path: '/register'});
 });
 
 App.MatchMessageRoute = Ember.Route.extend({

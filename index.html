@@ -27,7 +27,7 @@
         <form class="loginBox" id="loginBox" {{action "login" on="submit"}}>
             <p>
                 <img src="img/layout/layerEmail.png" alt="E-Mail" /><br />
-                {{input value=username type="text" class="textfieldLogin" id="email"}}
+                {{input value=name type="text" class="textfieldLogin" id="email"}}
             </p>
             <br /><br />
             <p>
@@ -36,11 +36,31 @@
 
             </p>
             <p>
-                <input type="submit" class="button" id="loginButton" text="" />
+                {{input type="submit" class="button" id="loginButton" }}
                 <button {{action 'guestlogin'}} type="button" class="button" id="loginAsGuestButton" />
             </p>
-            <a href="">Forgot your password?</a>
-            <input type="button" class="button" id="loginCreateAccount" value="CREATE NEW ACCOUNT" />
+            <a href="">Forgot your password?</a>{{#link-to 'register'}}
+            {{input type="button" value="Registrieren"}}
+            {{/link-to}}
+        </form>
+    </script>
+
+    <!--REGISTER-->
+    <script type="text/x-handlebars" data-template-name="register">
+        <form class="loginBox" id="loginBox" {{action "register" on="submit"}}>
+            <p>
+                <img src="img/layout/layerEmail.png" alt="E-Mail" /><br />
+                {{input value=name type="text" class="textfieldLogin" id="email"}}
+            </p>
+            <br /><br />
+            <p>
+                <img src="img/layout/layerPassword.png" alt="Password" /><br />
+                {{input value=password type="password" id="password" class="textfieldLogin"}}
+
+            </p>
+            <p>
+                {{input type="submit" class="button" id="registerButton" value="Registrieren"}}
+            </p>
         </form>
     </script>
 
@@ -104,7 +124,7 @@
     </script>
 
     <!--SIDE DECK EDITOR-->
-<script type="text/x-handlebars" data-template-name="sideDeck">
+    <script type="text/x-handlebars" data-template-name="sideDeck">
         <div class="deckeditorBox">
             <button class="deckeditorButton" id="buttonMyCollection">My Collection</button>
             <button class="deckeditorButton" id="buttonUnlockableCards">Unlockable Cards</button>
@@ -128,7 +148,7 @@
                 <button class="filterCards" id="plusCardsFilter">+ Cards</button>
                 <button class="filterCards" id="minusCardsFilter">- Cards</button>
                 <button class="filterCards" id="plusMinusCardsFilter">+- Cards</button>
-                <button class="filterCards" id="goldenCardsFilter">Golden Cards</button>              
+                <button class="filterCards" id="goldenCardsFilter">Golden Cards</button>
             </div>
         </div>
     </script>
@@ -232,5 +252,6 @@
     <script src="js/controllers/createMatchController.js"></script>
     <script src="js/controllers/sideDeckController.js"></script>
     <script src="js/controllers/appController.js"></script>
+    <script src="js/controllers/registerController.js"></script>
 </body>
 </html>

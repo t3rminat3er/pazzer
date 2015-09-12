@@ -13,15 +13,13 @@ db.once('open', function () {
 mongoose.connect('mongodb://localhost/pazzaak');
 
 var SideDeckSchema = new Schema({
-    name: String,
     cards: []
 });
 
 var userSchema = new Schema({
     name: { type: String, index: { unique: true } },
     password: { type: String, required: true },
-    sideDecks: [SideDeckSchema],
-    currentSideDeckId: String
+    sideDeck: [SideDeckSchema]
 });
 
 userSchema.virtual('id').get(function () {
