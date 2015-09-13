@@ -73,6 +73,7 @@ var onUserLoggedIn = function (user, socket) {
             }
         }
         guest.name = getGuestName(i);
+        guest.isGuest = true;
         onUserLoggedIn(guest, this);
         guests[i] = guest;
     },
@@ -84,7 +85,8 @@ var onUserLoggedIn = function (user, socket) {
                 socket.emit('alert', 'Internal Server error.');
             }
             else if (user) {
-                onUserLoggedIn({ name: user.name, id: user.id }, socket);
+                user.isGuest = false;
+                onUserLoggedIn( user, socket);
             } else {
                 socket.emit('alert', 'Nutzername oder Passwort falsch.');
             }

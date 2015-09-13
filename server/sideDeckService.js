@@ -1,9 +1,21 @@
 ﻿var socketIO = require('./socketServer.js').io,
     db = require('./repositories/dataBase.js'),
+    Deck = require('./deck.js'),
     userRepo = require('./repositories/userRepository.js');
 
-var getHandCards = function(player) {
-        var cards = [];
+var getHandCards = function (player) {
+    
+    var sideDeckCards = player.get('sideDeck').cards;
+    var cards = [];
+    if (sideDeckCards && sideDeckCards.length > 0) {
+        // use the side deck the user has specified
+        var sideDeck = new Deck(sideDeckCards);
+        for (var j = 0; j < 4; j++) {
+            cards.push(new PlusMinusCard(sideDeck.draw().value));
+        }
+    } else {
+        // generate a random one
+        // alternative: ask the user to create a side deck
         for (var i = 0; i < 4; i++) {
             var value = Math.floor(Math.random() * 13);
             value = value - 6;
@@ -13,22 +25,23 @@ var getHandCards = function(player) {
             }
             cards.push(new PlusMinusCard(value));
         }
-        console.log("random side deck", cards);
-        return cards;
-    },
+    }
+    console.log("random side deck", cards);
+    return cards;
+},
 
-    getAvailableSideDeckCards = function() {
+    getAvailableSideDeckCards = function () {
         var user = this.user;
         if (!user) {
             this.emit('error.route', 'login');
             return;
         }
-        var availableCards = user.sideDeck.availableCards;
+        var availableCards = user.availableSideDeckCards;
         console.log('sideDeckService.js getAvailableSideDeckCards ', availableCards);
         this.emit('sideDeck.availableCards', availableCards);
     },
 
-    createSideDeck = function(sideDeck) {
+    createSideDeck = function (sideDeck) {
         var user = this.user;
         if (!user) {
             this.emit('error.route', 'login');
@@ -38,7 +51,7 @@ var getHandCards = function(player) {
         user.save();
     },
 
-    getSideDecks = function() {
+    getSideDecks = function () {
         var user = this.user;
         if (!user) {
             this.emit('error.route', 'login');
@@ -53,8 +66,12 @@ var getHandCards = function(player) {
             this.emit('error.route', 'login');
             return;
         }
+        user.set('sideDeck', sideDeck);
+        if (!user.isGuest) {
+            user.save();
+        }
         console.log('setSideDeck ', arguments, this);
-        var socket = this;
+        this.emit('sideDeck.current', sideDeck);
     };
 
 socketIO.on('connection', function (socket) {

@@ -12,14 +12,15 @@ db.once('open', function () {
 
 mongoose.connect('mongodb://localhost/pazzaak');
 
-var SideDeckSchema = new Schema({
-    cards: []
-});
 
 var userSchema = new Schema({
     name: { type: String, index: { unique: true } },
     password: { type: String, required: true },
-    sideDeck: [SideDeckSchema]
+    sideDeck: {
+        title: { type: String , default: "Sidedeck" },
+        cards: []
+    },
+    isGuest: {type: Boolean}
 });
 
 userSchema.virtual('id').get(function () {
@@ -33,7 +34,8 @@ userSchema.set('toJSON', {
 if (!userSchema.options.toJSON) {
     userSchema.options.toJSON = {};
 }
-userSchema.options.toJSON.hide = '_id';
+userSchema.options.toJSON.hide = '_id password';
+
 userSchema.options.toJSON.transform = function (doc, ret, options) {
     if (options.hide) {
         options.hide.split(' ').forEach(function (prop) {
@@ -46,12 +48,11 @@ var defaultAvailableCardValues = [
     -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6
 ];
 
-userSchema.virtual('sideDeck.availableCards').get(function () {
+userSchema.virtual('availableSideDeckCards').get(function () {
     return defaultAvailableCardValues.map(function (value) {
         return new cards.PlusMinusCard(value);
     });
 });
 
-db.SideDeck = mongoose.model('sideDeck', SideDeckSchema);
 db.User = mongoose.model("user", userSchema);
 module.exports = db;

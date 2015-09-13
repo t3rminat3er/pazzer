@@ -1,15 +1,18 @@
 ﻿var Card = require('./cards.js').Card;
 
-var Deck = function () {
-    var cards = [],
-        cardsDrawn = 0;
-    
-    for (var i = 1; i <= 10; i++) {
-        var value = i;
-        for (var j = 0; j < 4; j++) {
-            cards.push(new Card(value));
+var Deck = function (cards) {
+    if (!cards) {
+        // if no cards provided - create and fill 
+        cards = [];
+        for (var i = 1; i <= 10; i++) {
+            var value = i;
+            for (var j = 0; j < 4; j++) {
+                cards.push(new Card(value));
+            }
         }
     }
+    var cardsDrawn = 0;
+    
     
     this.draw = function () {
         // source https://gist.github.com/jonarnaldo/9202694

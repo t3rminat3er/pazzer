@@ -4,30 +4,44 @@
 
     init: function () {
         this._super();
-        this.title = null;
-        this.cards = [];
+        this.title = this.title ? this.title : null;
+        this.cards = this.cards ? this.cards.splice() : [];
     }
 });
 
 App.SideDeckController = Ember.Controller.extend({
     availableCards: [],
-    selectedSideDeck: App.SideDeck.create(),
-
+    login: Ember.inject.controller('login'),
+    selectedSideDeck: function () {
+        var user = this.get('login').user;
+        var val = user.sideDeck ? App.SideDeck.create(user.sideDeck) : App.SideDeck.create();
+        console.log("side deck", val);
+        return val;
+    }.property('login'),
+    
     actions: {
         add: function (card) {
-            var cards = this.selectedSideDeck.cards;
-            if (cards.length > 10) {
+            var cards = this.get('selectedSideDeck.cards');
+            if (cards.length >= 10) {
                 alert("Ein Side Deck darf maximal 10 Karten beinhalten.");
             } else {
                 cards.pushObject(card);
+                this.set('unsaved', true);
             }
         },
         remove: function (index) {
             console.log(arguments);
-            this.selectedSideDeck.cards.removeAt(index);
+            this.get('selectedSideDeck.cards').removeAt(index);
+            this.set('unsaved', true);
         },
 
-        save: function() {
+        save: function () {
+            var length = this.get('selectedSideDeck.cards').length;
+            console.log(length);
+            if (length !== 10) {
+                alert("Ein Side Deck muss aus 10 Karten bestehen.");
+                return;
+            }
             this.socket.emit('sideDeck.set', this.get('selectedSideDeck'));
         }
     },
@@ -37,7 +51,12 @@ App.SideDeckController = Ember.Controller.extend({
             this.set('availableCards', availableCards);
         },
 
-        'sideDeck.current': 'selectedSideDeck'
+        'sideDeck.current': function (sideDeck) {
+            this.set('login.user.sideDeck', sideDeck);
+            console.log("sideDeck.current received");
+            this.set('unsaved', false);
+            history.back();
+        }
     }
 });
 

@@ -124,32 +124,35 @@
     </script>
 
     <!--SIDE DECK EDITOR-->
-    <script type="text/x-handlebars" data-template-name="sideDeck">
+<script type="text/x-handlebars" data-template-name="sideDeck">
         <div class="deckeditorBox">
-            <button class="deckeditorButton" id="buttonMyCollection">My Collection</button>
-            <button class="deckeditorButton" id="buttonUnlockableCards">Unlockable Cards</button>
+            <!--<button class="deckeditorButton" id="buttonMyCollection">My Collection</button>
+            <button class="deckeditorButton" id="buttonUnlockableCards">Unlockable Cards</button>-->
             <div class="selectedCardsBox">
                 <span class="deckname">DECKNAME</span>
                 <div style="margin-bottom:24em">
                     {{#each selectedSideDeck.cards key="@index" as |card index|}}
-                    <card class="card currentDeckCard card-{{card.name}}" {{action 'remove' index}}></card>
+                    <card class="card card-{{card.name}}" {{action 'remove' index}}></card>
                     {{/each}}
                 </div>
-                <button class="deckeditorButton" {{action save}} id="save">SAVE</button><br />
+                <button class="deckeditorButton" {{action 'save'}} id="save">SAVE</button><br />
+                {{#if unsaved}}
+                    <h4>NICHT GESPEICHERT</h4>
+                {{/if}}
             </div>
             <div class="cardOverviewBox">
                 {{#each availableCards as |card|}}
                 <div class="card card-{{card.name}}" {{action 'add' card}}></div>
                 {{/each}}
             </div>
-            <span class="filter">FILTER</span>
+            <!--<span class="filter">FILTER</span>
             <div class="filterBox">
                 <button class="filterCards" id="allCardsFilter">All Cards</button>
                 <button class="filterCards" id="plusCardsFilter">+ Cards</button>
                 <button class="filterCards" id="minusCardsFilter">- Cards</button>
                 <button class="filterCards" id="plusMinusCardsFilter">+- Cards</button>
                 <button class="filterCards" id="goldenCardsFilter">Golden Cards</button>
-            </div>
+            </div>-->
         </div>
     </script>
 
