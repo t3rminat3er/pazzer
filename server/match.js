@@ -67,20 +67,21 @@
                     winningPlayer.setsWon++;
                     if (winningPlayer.setsWon === 3) {
                         // player won match
-                        emit('match.ended', {
+                        setEndArgs.matchEndArgs = {
                             winner: setEndArgs.winner,
                             reason: setEndArgs.winner.name + " Won this match!"
-                        });
-                        return;
+                        };
                     }
                 } else {
                     // on a tie the player who didn't start the last set starts
                     startingPlayer = player1.user.id === currentSet.startingPlayer.user.id ? player2 : player1;
                 }
-
-                var cb = function() {
+                
+                var cb = function () {
                     emit('set.ended', setEndArgs);
-                    startNewSet(startingPlayer);
+                    if (!setEndArgs.matchEndArgs) {
+                        startNewSet(startingPlayer);
+                    }
                 };
                 setTimeout(cb, 100);
             },

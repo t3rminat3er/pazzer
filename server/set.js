@@ -71,6 +71,10 @@
                 console.log('set' + id + '.checkWin ', setEndArgs);
                 if (setEndArgs) {
                     isOver = true;
+                    setEndArgs.set = {
+                        player1: player1,
+                        player2: player2
+                    }
                     self.emit('setEnded', setEndArgs);
                 }
                 return setEndArgs;

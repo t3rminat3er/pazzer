@@ -25,11 +25,21 @@ var events = require('events'),
             var userIdEvent = this.user.id + '.' + event;
             console.log('player.emit: ', userIdEvent, content);
             socket.emit(userIdEvent, content);
-
+            
             if (isPrivateAction) {
                 this.emit(event, content);
             }
         };
+        
+        this.toJSON = function () {
+            return {
+                id: this.user.id,
+                name: this.user.name,
+                openCards: this.openCards,
+                setsWon: this.setsWon,
+                total: this.total
+            }
+        }
     };
 
 util.inherits(Player, events.EventEmitter);
