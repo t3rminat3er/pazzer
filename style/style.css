@@ -45,6 +45,77 @@ body {
     background-color: rgba(0, 0, 0, 0.2);
 }
 
+@-moz-keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@-moz-keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadeIn {
+    from {
+        -moz-transform: translateY(10px);
+    }
+
+    to {
+        -moz-transform: translateY(0);
+    }
+}
+
+@-moz-keyframes fadeIn {
+    from {
+        -webkit-transform: translateY(10px);
+    }
+
+    to {
+        -webkit-transform: translateY(0);
+    }
+}
+
+@keyframes popUp {
+    from {
+        transform: translateY(10px);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+
 
 /* ############################     Login Screen       ###########################*/
 
@@ -133,12 +204,15 @@ body {
     color: darkblue;
 }
 
+
+
 .player2HandCardsBox {
     width: 27em;
     height: 20%;
     margin-left: 8em;
     padding-left: 7em;
 }
+
 
 .playedCardsBox {
     position: relative;
@@ -153,6 +227,14 @@ body {
     margin-top: 1rem;
     margin-left: 1rem;
 }
+
+    .playerPlayedCards > * {
+        -webkit-animation: fadeIn 500ms, popUp 300ms;
+        -moz-animation: fadeIn 500ms, popUp 300ms;
+        -ms-animation: fadeIn 500ms, popUp 300ms;
+        -o-animation: fadeIn 500ms, popUp 300ms;
+        animation: fadeIn 500ms, popUp 300ms;
+    }
 
 .player1HandCardsBox {
     width: 27em;
@@ -297,9 +379,9 @@ body {
         margin-bottom: 0.5em;
     }
 
-    .won-set {
+.won-set {
     background-color: greenyellow;
-    }
+}
 
 #player2Set1 {
     background-color: greenyellow;
