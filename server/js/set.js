@@ -44,9 +44,13 @@
             checkWin = function () {
                 var setEndArgs;
                 var reason = "";
-                if (self.currentPlayer.total > 20) {
+                
+                if (player1.gaveUp) {
+                    setEndArgs = new SetEndArgs(true, player2, player1.user.name + " gave up!");
+                } else if (player2.gaveUp) {
+                    setEndArgs = new SetEndArgs(true, player1, player2.user.name + " gave up!");
+                } else if (self.currentPlayer.total > 20) {
                     // bust
-                    console.log("player is bust", self.currentPlayer.user.name, self.currentPlayer.total);
                     reason = self.currentPlayer.user.name + " drew more than 20 this round!";
                     setEndArgs = new SetEndArgs(true, getNotCurrentPlayer(), reason);
                 } else if (player1.isHolding && player2.isHolding) {
@@ -61,18 +65,13 @@
                         reason = winner.user.name + " has an higher score than " + loser.user.name;
                         setEndArgs = new SetEndArgs(true, winner, reason);
                     }
-                } else if (player1.gaveUp) {
-                    setEndArgs = new SetEndArgs(true, player2, player1.user.name + " gave up!");
-                } else if (player2.gaveUp) {
-                    setEndArgs = new SetEndArgs(true, player1, player2.user.name + " gave up!");
-                }else {
+                } else {
                     setEndArgs = checkFullTableWin(player1);
                     if (!setEndArgs) {
                         setEndArgs = checkFullTableWin(player2);
                     }
                 }
-                
-                console.log('set' + id + '.checkWin ', setEndArgs);
+
                 if (setEndArgs) {
                     isOver = true;
                     appendSetInfo(setEndArgs);
@@ -89,9 +88,7 @@
 
             swapPlayers = function () {
                 // swap players
-                console.log('set ' + id + ' current player: ', self.currentPlayer.user.id);
                 self.currentPlayer = getNotCurrentPlayer();
-                console.log('set ' + id + ' current player: ', self.currentPlayer.user.id);
             },
 
             onCardPlayed = function () {
@@ -99,14 +96,13 @@
                 
                 if (player.total === 20) {
                     // auto hold this player and start new turn switching to the other player
-                    console.log('autoHOlding');
                     self.currentPlayer.setHolding();
                     self.nextTurn();
                 }
             },
 
-            appendSetInfo = function(setEndArgs) {
-               
+            appendSetInfo = function (setEndArgs) {
+                
                 setEndArgs.set = {
                     player1: player1,
                     player2: player2
@@ -115,7 +111,6 @@
 
             drawForCurrentPlayer = function () {
                 var card = deck.draw();
-                console.log('match.js card drawn', card);
                 self.currentPlayer.onCardPlayed(card);
                 self.currentPlayer.setTurn(true);
             };
@@ -166,10 +161,8 @@
             swapPlayers();
             if (this.currentPlayer.isHolding) {
                 // current player is holding - swap back again
-                console.log('current player is holding');
                 swapPlayers();
                 if (this.currentPlayer.isHolding) {
-                    console.log('both players are holding');
                     // both holding - set is definitely over
                     checkWin();
                     return;

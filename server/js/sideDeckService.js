@@ -26,7 +26,6 @@ var getHandCards = function (player) {
             cards.push(new PlusMinusCard(value));
         }
     }
-    console.log("random side deck", cards);
     return cards;
 },
 
@@ -37,7 +36,6 @@ var getHandCards = function (player) {
             return;
         }
         var availableCards = user.availableSideDeckCards;
-        console.log('sideDeckService.js getAvailableSideDeckCards ', availableCards);
         this.emit('sideDeck.availableCards', availableCards);
     },
 

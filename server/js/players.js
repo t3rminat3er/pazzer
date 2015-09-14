@@ -7,7 +7,6 @@ var login = require('./login.js'),
 socketServer.io.on('connection', function (socket) {
     socket.on('getPlayers', function () {
         var players = login.getOnlinePlayers();
-        console.log("get players", players);
         this.emit('onlinePlayers', players);
     });
 });

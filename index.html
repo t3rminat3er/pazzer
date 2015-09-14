@@ -23,26 +23,27 @@
     </script>
 
     <!--LOGIN-->
-    <script type="text/x-handlebars" data-template-name="login">
-        <form class="loginBox" id="loginBox" {{action "login" on="submit"}}>
-            <p>
-                <img src="img/layout/layerEmail.png" alt="E-Mail" /><br />
-                {{input value=name type="text" class="textfieldLogin" id="email"}}
-            </p>
-            <br /><br />
-            <p>
-                <img src="img/layout/layerPassword.png" alt="Password" /><br />
-                {{input value=password type="password" id="password" class="textfieldLogin"}}
+<script type="text/x-handlebars" data-template-name="login">
+    <form class="loginBox" id="loginBox" {{action "login" on="submit"}}>
+        <p>
+            <img src="img/layout/layerEmail.png" alt="E-Mail" /><br />
+            {{input value=name type="text" class="textfieldLogin" id="email"}}
+        </p>
+        <br /><br />
+        <p>
+            <img src="img/layout/layerPassword.png" alt="Password" /><br />
+            {{input value=password type="password" id="password" class="textfieldLogin"}}
 
-            </p>
-            <p>
-                {{input type="submit" class="button" id="loginButton" }}
-                <button {{action 'guestlogin'}} type="button" class="button" id="loginAsGuestButton" />
-            </p>
-            <!--<a href="">Forgot your password?</a>{{#link-to 'register'}}-->
-            {{input type="button" value="Registrieren"}}
-            {{/link-to}}
-        </form>
+        </p>
+        <p>
+            {{input type="submit" class="button" id="loginButton" }}
+            <button {{action 'guestlogin'}} type="button" class="button" id="loginAsGuestButton" />
+        </p>
+        <!--<a href="">Forgot your password?</a>-->
+        {{#link-to 'register'}}
+        {{input type="button" value="Registrieren"}}
+        {{/link-to}}
+    </form>
     </script>
 
     <!--REGISTER-->

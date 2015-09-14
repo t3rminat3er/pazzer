@@ -8,18 +8,15 @@
 
     actions: {
         join: function(match) {
-            console.log('join match');
             this.socket.emit('joinMatch', match.id);
         }
     },
 
     sockets: {
         matches: function (matches) {
-            console.log('matches', arguments);
             this.set('matches', matches);
         },
         matchOpened: function (match) {
-            console.log('matchesController.js matchOpened', arguments);
             this.matches.pushObject(match);
         },
         matchClosed: function (match) {

@@ -8,7 +8,6 @@
     
     actions: {
         register: function () {
-            console.log('registerController.js  register', arguments, this);
             this.socket.emit('register', {
                 name: this.get('name'),
                 password: this.get('password')

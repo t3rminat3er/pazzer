@@ -11,7 +11,6 @@
         }],
         
     getMatches = function () {
-        console.log("getMatches", openMatches);
         this.emit('matches', openMatches);
     },
 
@@ -23,12 +22,10 @@
     },
 
     joinMatch = function (matchId) {
-        console.log('find by id', matchId);
         var match;
         for (var i = 0; i < openMatches.length; i++) {
             match = openMatches[i];
             if (match.id === matchId) {
-                console.log('matches.js', 'match found');
                 // remove - match is no longer open
                 match.onPlayerJoined(new Player(this));
 

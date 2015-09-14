@@ -10,7 +10,6 @@
             }
             cards.push(new App.PlusMinusCard(value));
         }
-        console.log("random side deck", cards);
         return cards;
     }
 });

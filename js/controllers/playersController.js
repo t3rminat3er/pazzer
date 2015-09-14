@@ -4,7 +4,6 @@
 
     init: function () {
         this._super();
-        console.log(this, "init");
         this.socket.emit('getPlayers');
     },
 

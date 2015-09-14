@@ -10,7 +10,6 @@ socketServer.io.on('connection', function (socket) {
 
 var onRegister = function (user) {
     var socket = this;
-    console.log('register.js onRegister ', arguments);
     db.User.findOne({ name: user.name }, function(error, res) {
         if (res) {
             socket.emit('alert', "Nutzername bereits vergeben.");

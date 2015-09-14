@@ -23,7 +23,6 @@ var events = require('events'),
                 // use provided socket
             }
             var userIdEvent = this.user.id + '.' + event;
-            console.log('player.emit: ', userIdEvent, content);
             socket.emit(userIdEvent, content);
             
             if (isPrivateAction) {

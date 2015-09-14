@@ -1,7 +1,6 @@
 ﻿App.TableDeckService = Ember.Service.extend({
     createNew: function () {
         var deck = new this.Deck(App.Card);
-        console.log("random tabl deck", deck);
         return deck;
     },
 

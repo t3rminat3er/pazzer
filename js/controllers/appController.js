@@ -2,7 +2,6 @@
 
     sockets: {
         'error.route': function (fallback) {
-            console.log('AppController.js error.route ', arguments, this, self);
             this.transitionToRoute(fallback);
         }
     }

@@ -8,7 +8,6 @@
 
     sockets: {
         loggedIn: function (user) {
-            console.log('user', user);
             this.set('user', user);
             this.transitionToRoute('lobby');
         }  

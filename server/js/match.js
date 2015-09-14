@@ -51,7 +51,6 @@
 
             isSocketCurrentPlayer = function (socket) {
                 var currentIsActive = currentSet.currentPlayer.user.id === getPlayerFromSocket(socket).user.id;
-                console.log('current is active', currentIsActive);
                 return currentIsActive;
             },
 
@@ -108,17 +107,11 @@
         
         
         this.emitPublicPlayerAction = function (player, event, content) {
-            console.log('match.js emitPUblicPlayerAction', event, content);
             player.emitEvent(event, content, player1.socket);
             player.emitEvent(event, content, player2.socket);
         };
         
         this.onPlayerJoined = function (player) {
-            console.log(player.__proto__);
-            // override the emit method to also emit to socket
-            
-            
-            console.log('match.js newPlayer', player.user);
             
             player.match = this;
             player.socket.emit('match.joined', this);
@@ -192,7 +185,6 @@ Player.prototype.set = function (variableName, value) {
 Player.prototype.setHolding = function (isHolding) {
     // if a parameter was passed in use it - else set it to true
     isHolding = isHolding === undefined ? true : isHolding;
-    console.log("player.setHolding", isHolding);
     if (this.set('isHolding', isHolding)) {
         this.emitPublic('holding', this.isHolding);
     }

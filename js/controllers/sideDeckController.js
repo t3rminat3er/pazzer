@@ -15,7 +15,6 @@ App.SideDeckController = Ember.Controller.extend({
     selectedSideDeck: function () {
         var user = this.get('login').user;
         var val = user.sideDeck ? App.SideDeck.create(user.sideDeck) : App.SideDeck.create();
-        console.log("side deck", val);
         return val;
     }.property('login'),
     
@@ -30,14 +29,12 @@ App.SideDeckController = Ember.Controller.extend({
             }
         },
         remove: function (index) {
-            console.log(arguments);
             this.get('selectedSideDeck.cards').removeAt(index);
             this.set('unsaved', true);
         },
 
         save: function () {
             var length = this.get('selectedSideDeck.cards').length;
-            console.log(length);
             if (length !== 10) {
                 alert("Ein Side Deck muss aus 10 Karten bestehen.");
                 return;
@@ -53,7 +50,6 @@ App.SideDeckController = Ember.Controller.extend({
 
         'sideDeck.current': function (sideDeck) {
             this.set('login.user.sideDeck', sideDeck);
-            console.log("sideDeck.current received");
             this.set('unsaved', false);
             history.back();
         }

@@ -3,7 +3,6 @@
 
     actions: {
         createMatch: function () {
-            console.log(this.name);
             if (!this.name) {
                 alert("Benenne das Spiel.");
                 return;

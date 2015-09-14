@@ -33,7 +33,6 @@ var onUserLoggedIn = function (user, socket) {
         var index = onlinePlayers.indexOf(user);
         if (index > -1) {
             onlinePlayers.splice(index, 1);
-            console.log("on user logged out", user);
         } else {
             console.warn("logged out user was not registered", user);
         }
@@ -52,7 +51,6 @@ var onUserLoggedIn = function (user, socket) {
             var guest = guests[i];
             if (guest) {
                 if (guest.id === user.id) {
-                    console.log("guest disconnected", guest.name);
                     guests[i] = null;
                     return;
                 }
