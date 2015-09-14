@@ -60,6 +60,9 @@
             }
             console.log('matchController.js hold', arguments, this);
             this.player.socket.emit('hold');
+        },
+        giveUp: function() {
+            this.player.socket.emit('giveUp');
         }
     },
 

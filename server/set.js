@@ -61,7 +61,11 @@
                         reason = winner.user.name + " has an higher score than " + loser.user.name;
                         setEndArgs = new SetEndArgs(true, winner, reason);
                     }
-                } else {
+                } else if (player1.gaveUp) {
+                    setEndArgs = new SetEndArgs(true, player2, player1.user.name + " gave up!");
+                } else if (player2.gaveUp) {
+                    setEndArgs = new SetEndArgs(true, player1, player2.user.name + " gave up!");
+                }else {
                     setEndArgs = checkFullTableWin(player1);
                     if (!setEndArgs) {
                         setEndArgs = checkFullTableWin(player2);
@@ -71,10 +75,7 @@
                 console.log('set' + id + '.checkWin ', setEndArgs);
                 if (setEndArgs) {
                     isOver = true;
-                    setEndArgs.set = {
-                        player1: player1,
-                        player2: player2
-                    }
+                    appendSetInfo(setEndArgs);
                     self.emit('setEnded', setEndArgs);
                 }
                 return setEndArgs;
@@ -104,6 +105,14 @@
                 }
             },
 
+            appendSetInfo = function(setEndArgs) {
+               
+                setEndArgs.set = {
+                    player1: player1,
+                    player2: player2
+                };
+            },
+
             drawForCurrentPlayer = function () {
                 var card = deck.draw();
                 console.log('match.js card drawn', card);
@@ -127,6 +136,13 @@
             deck = new Deck();
             assignHandDecks();
             drawForCurrentPlayer();
+        };
+        
+        this.playerGaveUp = function (user) {
+            isOver = true;
+            var foldingPlayer = player1.user.id === user.id ? player1 : player2;
+            foldingPlayer.gaveUp = true;
+            checkWin();
         };
         
         this.dispose = function () {

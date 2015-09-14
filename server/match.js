@@ -38,6 +38,10 @@
                         currentSet.nextTurn();
                     }
                 });
+
+                attachSocketListener('giveUp', function() {
+                    currentSet.playerGaveUp(this.user);
+                });
             },
             
             emit = function (event, content) {
