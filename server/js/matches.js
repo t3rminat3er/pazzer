@@ -4,11 +4,7 @@
     util = require('util'),
 
 
-    openMatches = [
-        {
-                id: "123id",
-                name: "Server Test Match"
-        }],
+    openMatches = [],
         
     getMatches = function () {
         this.emit('matches', openMatches);
@@ -19,6 +15,11 @@
         match.onPlayerJoined(new Player(this));
         openMatches.push(match);
         socketServer.io.emit('matchOpened', match);
+
+        match.on('player.left', function(match) {
+            openMatches.push(match);
+            socketServer.io.emit('matchOpened', match);
+        });
     },
 
     joinMatch = function (matchId) {

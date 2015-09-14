@@ -2,6 +2,7 @@
     util = require('util'),
     Player = require('./player.js'),
     Set = require('./set.js'),
+    events = require('events'),
 
     Match = function (name) {
         this.id = ID();
@@ -13,11 +14,13 @@
             self = this,
 
             attachSocketListener = function (event, handler) {
+                player1.socket.removeAllListeners(event);
+                player2.socket.removeAllListeners(event);
                 player1.socket.on(event, handler);
                 player2.socket.on(event, handler);
             },
 
-            onWantRematch = function(player, wantsRematch) {
+            onWantRematch = function (player, wantsRematch) {
                 player.wantsRematch = wantsRematch;
                 var otherPlayer = player.user.id === player1.user.id ? player2 : player1;
                 if (otherPlayer.wantsRematch && wantsRematch) {
@@ -52,10 +55,19 @@
                         currentSet.nextTurn();
                     }
                 });
-
-                attachSocketListener('match.player.left', function() {
+                
+                attachSocketListener('match.player.left', function () {
                     var player = getPlayerFromSocket(this);
+                    if (player === player1) {
+                        player1 = null;
+                    } else {
+                        player2 = null;
+                    }
                     onWantRematch(player, false);
+                    
+                    var otherPlayer = player.user.id === player1.user.id ? player2 : player1;
+                    otherPlayer.socket.emit('opponent.left');
+                    self.emit('player.left', self);
                 });
                 
                 attachSocketListener('giveUp', function () {
@@ -69,11 +81,6 @@
                 startMatch();
             },
             
-            emit = function (event, content) {
-                player1.socket.emit(event, content);
-                player2.socket.emit(event, content);
-            },
-
             isSocketCurrentPlayer = function (socket) {
                 var currentIsActive = currentSet.currentPlayer.user.id === getPlayerFromSocket(socket).user.id;
                 return currentIsActive;
@@ -136,7 +143,7 @@
                 
                 player1.socket.emit('opponent.joined', player2.user);
                 player2.socket.emit('opponent.joined', player1.user);
-
+                
                 var startingPlayer = Math.random() < 0.5 ? player1 : player2;
                 startNewSet(startingPlayer);
             };
@@ -148,25 +155,28 @@
         };
         
         this.onPlayerJoined = function (player) {
-            
+            if(player1 && player2) {
+                player.socket.emit('alert', "This match is full");
+                return;
+            }
             player.match = this;
             player.socket.emit('match.joined', this);
             
             if (!player1) {
                 player1 = player;
             } else if (!player2) {
-                // opponent joined - tell everyone!
                 player2 = player;
-                
+            }
+            if (player1 && player2) {
                 // let's go
                 startMatch();
-                
                 attachSocketListeners();
-            } else {
-                player.socket.emit('alert', "This match is full");
-            }
+            } 
         };
     };
+
+
+util.inherits(Match, events.EventEmitter);
 
 Player.prototype.emitPublic = function (event, content) {
     this.match.emitPublicPlayerAction(this, event, content);
@@ -181,6 +191,8 @@ Player.prototype.onCardPlayed = function (card) {
         total: this.total
     });
 };
+
+
 
 Player.prototype.hasPlayedHandCardThisTurn = false;
 

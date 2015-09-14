@@ -111,6 +111,10 @@
             this.setPlayer('opponent', user);
         },
 
+        'opponent.left': function() {
+            this.set('opponent', null);
+        },
+
         'opponent.wantsRematch': function (wantsRematch) {
             if (!wantsRematch) {
                 this.send('closeModal');
