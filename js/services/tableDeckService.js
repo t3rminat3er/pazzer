@@ -31,11 +31,7 @@
 
             return temp;
         }
-
-
-
     }
-
 });
 
 App.Card = function (value) {

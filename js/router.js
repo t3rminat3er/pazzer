@@ -1,13 +1,15 @@
 ﻿App.Router.map(function () {
     this.route('login', { path: '/' });
     this.route('lobby', { path: '/lobby' });
-    this.route('match', { path: '/match/:id', function() {
-        this.route('message'),
+    this.route('match', {
+        path: '/match/:id', function() {
+            this.route('message');
             this.route('setEnded');
+            this.route('matchEnded');
         }
     });
     this.route('sideDeck', { path: '/sideDeck' });
-    this.route('register', {path: '/register'});
+    this.route('register', { path: '/register' });
 });
 
 App.MatchMessageRoute = Ember.Route.extend({
@@ -15,6 +17,10 @@ App.MatchMessageRoute = Ember.Route.extend({
 });
 
 App.MatchSetEndedRoute = Ember.Route.extend({
+    controllerName: 'match'
+});
+
+App.MatchMatchEndedRoute = Ember.Route.extend({
     controllerName: 'match'
 });
 
@@ -47,5 +53,8 @@ App.LobbyRoute = Ember.Route.extend({
 
 App.MatchRoute = Ember.Route.extend({
     setupController: function (controller, model) {
+    },
+    deactivate: function() {
+        this.controller.onClosed();
     }
 });

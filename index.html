@@ -23,27 +23,27 @@
     </script>
 
     <!--LOGIN-->
-<script type="text/x-handlebars" data-template-name="login">
-    <form class="loginBox" id="loginBox" {{action "login" on="submit"}}>
-        <p>
-            <img src="img/layout/layerEmail.png" alt="E-Mail" /><br />
-            {{input value=name type="text" class="textfieldLogin" id="email"}}
-        </p>
-        <br /><br />
-        <p>
-            <img src="img/layout/layerPassword.png" alt="Password" /><br />
-            {{input value=password type="password" id="password" class="textfieldLogin"}}
+    <script type="text/x-handlebars" data-template-name="login">
+        <form class="loginBox" id="loginBox" {{action "login" on="submit"}}>
+            <p>
+                <img src="img/layout/layerEmail.png" alt="E-Mail" /><br />
+                {{input value=name type="text" class="textfieldLogin" id="email"}}
+            </p>
+            <br /><br />
+            <p>
+                <img src="img/layout/layerPassword.png" alt="Password" /><br />
+                {{input value=password type="password" id="password" class="textfieldLogin"}}
 
-        </p>
-        <p>
-            {{input type="submit" class="button" id="loginButton" }}
-            <button {{action 'guestlogin'}} type="button" class="button" id="loginAsGuestButton" />
-        </p>
-        <!--<a href="">Forgot your password?</a>-->
-        {{#link-to 'register'}}
-        {{input type="button" value="Registrieren"}}
-        {{/link-to}}
-    </form>
+            </p>
+            <p>
+                {{input type="submit" class="button" id="loginButton" }}
+                <button {{action 'guestlogin'}} type="button" class="button" id="loginAsGuestButton" />
+            </p>
+            <!--<a href="">Forgot your password?</a>-->
+            {{#link-to 'register'}}
+            {{input type="button" value="Registrieren"}}
+            {{/link-to}}
+        </form>
     </script>
 
     <!--REGISTER-->
@@ -100,6 +100,19 @@
         {{/modal-dialog}}
     </script>
 
+    <script type="text/x-handlebars" data-template-name="match/matchEnded">
+        {{#modal-dialog action="closeModal"}}
+        <h2>{{matchEndArgs.reason}}</h2>
+        {{#if  matchEndArgs.opponentWantsRematch}}
+        <h2 style="color: red">YOUR OPPONENT WANTS TO CHALLENGE YOU AGAIN</h2>
+        {{/if}}
+        {{#if  matchEndArgs.waiting}}
+        <h2 style="color: orange">waiting for opponent to accept the rematch</h2>
+        {{/if}}
+        <button class="rematch-button" {{action 'rematch'}}>REMATCH !</button>
+        {{/modal-dialog}}
+    </script>
+
     <script type="text/x-handlebars" data-template-name="match/setEnded">
         {{#modal-dialog action="closeModal"}}
         {{#if lastSetArgs.winner}}
@@ -116,7 +129,7 @@
                 {{/each}}
             </div>
             <p>
-                <h3>{{lastSetArgs.set.player.name}} TOTAL: {{lastSetArgs.set.player.total}}</h3>
+                <h3>YOUR TOTAL: {{lastSetArgs.set.player.total}}</h3>
             </p>
             <div class="playerPlayedCards">
                 {{#each lastSetArgs.set.player.openCards as |card|}}
@@ -124,7 +137,6 @@
                 {{/each}}
             </div>
         </div>
-
         {{/modal-dialog}}
     </script>
 

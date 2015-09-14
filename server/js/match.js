@@ -17,13 +17,23 @@
                 player2.socket.on(event, handler);
             },
 
+            onWantRematch = function(player, wantsRematch) {
+                player.wantsRematch = wantsRematch;
+                var otherPlayer = player.user.id === player1.user.id ? player2 : player1;
+                if (otherPlayer.wantsRematch && wantsRematch) {
+                    startRematch();
+                } else {
+                    otherPlayer.socket.emit('opponent.wantsRematch', wantsRematch);
+                }
+            },
+
             attachSocketListeners = function () {
                 attachSocketListener('endTurn', function () {
                     var sendingPlayer = getPlayerFromSocket(this);
-                    if (!sendingPlayer.turn) {
-                        emit('alert', "Not your turn!");
-                        return;
-                    }
+                    //if (!sendingPlayer.turn) {
+                    //    emit('alert', "Not your turn!");
+                    //    return;
+                    //}
                     currentSet.nextTurn();
                 });
                 attachSocketListener('playHandCard', function (args) {
@@ -32,6 +42,10 @@
                         currentSet.currentPlayer.playHandCard(args);
                     }
                 });
+                attachSocketListener('rematch', function () {
+                    var player = getPlayerFromSocket(this);
+                    onWantRematch(player, true);
+                });
                 attachSocketListener('hold', function () {
                     if (isSocketCurrentPlayer(this)) {
                         currentSet.currentPlayer.setHolding();
@@ -39,9 +53,20 @@
                     }
                 });
 
-                attachSocketListener('giveUp', function() {
+                attachSocketListener('match.player.left', function() {
+                    var player = getPlayerFromSocket(this);
+                    onWantRematch(player, false);
+                });
+                
+                attachSocketListener('giveUp', function () {
                     currentSet.playerGaveUp(this.user);
                 });
+            },
+
+            startRematch = function () {
+                player1.socket.emit('match.joined', self);
+                player2.socket.emit('match.joined', self);
+                startMatch();
             },
             
             emit = function (event, content) {
@@ -85,7 +110,7 @@
                     if (!setEndArgs.matchEndArgs) {
                         startNewSet(startingPlayer);
                     } else {
-                        var matchEndedCallback = function() {
+                        var matchEndedCallback = function () {
                             emit('match.ended', setEndArgs.matchEndArgs);
                         };
                         setTimeout(matchEndedCallback, 500);
@@ -103,6 +128,17 @@
                 currentSet.on('setEnded', onSetEnded);
                 
                 currentSet.start(startingPlayer);
+            },
+        
+            startMatch = function () {
+                player1.setsWon = 0;
+                player2.setsWon = 0;
+                
+                player1.socket.emit('opponent.joined', player2.user);
+                player2.socket.emit('opponent.joined', player1.user);
+
+                var startingPlayer = Math.random() < 0.5 ? player1 : player2;
+                startNewSet(startingPlayer);
             };
         
         
@@ -121,12 +157,9 @@
             } else if (!player2) {
                 // opponent joined - tell everyone!
                 player2 = player;
-                player1.socket.emit('opponent.joined', player2.user);
-                player2.socket.emit('opponent.joined', player1.user);
                 
                 // let's go
-                var startingPlayer = Math.random() < 0.5 ? player1 : player2;
-                startNewSet(startingPlayer);
+                startMatch();
                 
                 attachSocketListeners();
             } else {
@@ -196,6 +229,7 @@ Player.prototype.reset = function () {
     this.total = 0;
     this.openCards = [];
     this.gaveUp = false;
+    this.wantsRematch = false;
 }
 
 module.exports = Match;

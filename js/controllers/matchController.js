@@ -6,6 +6,7 @@
     match: {},
     message: "",
     lastSetArgs: {},
+    matchEndArgs: {},
 
     setPlayer: function (playerName, user) {
         this.set(playerName, App.Player.create({
@@ -25,25 +26,47 @@
     },
 
     showSetEnded: function (setEndedArgs) {
-        this.send('openModal', 'match.setEnded');
         this.set('lastSetArgs', setEndedArgs);
+        this.send('openModal', 'match.setEnded');
+    },
+
+    onClosed: function () {
+        console.log('matchController onClosed');
+        this.socket.emit('match.player.left');
     },
 
     actions: {
         closeModal: function () {
             if (this.lastSetArgs) {
-                var matchEndArgs = this.lastSetArgs.matchEndArgs;
-                if (matchEndArgs) {
-                    var self = this;
-                    this.set('lastSetArgs', null);
-                    setTimeout(function () {
-                        self.showMessage(matchEndArgs.reason);
-                        history.back();
-                    }, 100);
+                // set end modal is open
+                if (!this.get('lastSetArgs.matchEndArgs')) {
+                    return true;
                 }
+                var oponentWating = this.matchEndArgs ? this.matchEndArgs.opponentWantsRematch : false;
+                this.set('matchEndArgs', this.lastSetArgs.matchEndArgs);
+                this.set('matchEndArgs.opponentWantsRematch', oponentWating);
+                this.set('lastSetArgs', null);
+                var self = this;
+                setTimeout(function () {
+                    self.send('openModal', 'match.matchEnded');
+                }, 100);
+                return true;
+            }
+            if (this.get('matchEndArgs')) {
+                // match end modal open
+                console.log("history back, modal close", this.matchEndArgs);
+                this.set('matchEndArgs', undefined);
+                history.back();
+                return true;
             }
             return true;
         },
+
+        rematch: function () {
+            this.socket.emit('rematch');
+            this.set('matchEndArgs.waiting', true);
+        },
+
         playHandCard: function (card) {
             if (!this.player.turn) {
                 alert("Du bist nicht an der Reihe!");
@@ -83,13 +106,21 @@
         },
 
         'opponent.joined': function (user) {
+            this.set('matchEndArgs', null);
+            this.send('closeModal');
             this.setPlayer('opponent', user);
         },
 
-        //'match.ended': function (args) {
-        //    this.showMessage(args.reason);
-        //    history.back();
-        //},
+        'opponent.wantsRematch': function (wantsRematch) {
+            if (!wantsRematch) {
+                this.send('closeModal');
+            } else {
+                if (!this.matchEndArgs) {
+                    this.set('matchEndArgs', {});
+                }
+                this.set('matchEndArgs.opponentWantsRematch', wantsRematch);
+            }
+        },
 
         'set.ended': function (args) {
             if (args.hasWinner) {
@@ -107,7 +138,7 @@
             this.resetPlayer(this.player);
             this.resetPlayer(this.opponent);
             this.showSetEnded(args);
-        }
+        },
     }
 });
 
