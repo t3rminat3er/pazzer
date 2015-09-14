@@ -58,15 +58,16 @@
                 
                 attachSocketListener('match.player.left', function () {
                     var player = getPlayerFromSocket(this);
+                    onWantRematch(player, false);
+
+                    var otherPlayer = player.user.id === player1.user.id ? player2 : player1;
+                    otherPlayer.socket.emit('opponent.left');
+
                     if (player === player1) {
                         player1 = null;
                     } else {
                         player2 = null;
                     }
-                    onWantRematch(player, false);
-                    
-                    var otherPlayer = player.user.id === player1.user.id ? player2 : player1;
-                    otherPlayer.socket.emit('opponent.left');
                     self.emit('player.left', self);
                 });
                 
@@ -76,8 +77,6 @@
             },
 
             startRematch = function () {
-                player1.socket.emit('match.joined', self);
-                player2.socket.emit('match.joined', self);
                 startMatch();
             },
             
@@ -90,6 +89,12 @@
                 var user = socket.user;
                 var player = player1.user.id === user.id ? player1 : player2;
                 return player;
+            },
+
+            emitMatchEvent = function (event, args) {
+                self.emit(event, args);
+                player1.socket.emit(event, args);
+                player2.socket.emit(event, args);
             },
 
             onSetEnded = function (setEndArgs) {
@@ -111,14 +116,15 @@
                     // on a tie the player who didn't start the last set starts
                     startingPlayer = player1.user.id === currentSet.startingPlayer.user.id ? player2 : player1;
                 }
+
                 
                 var cb = function () {
-                    emit('set.ended', setEndArgs);
+                    emitMatchEvent('set.ended', setEndArgs);
                     if (!setEndArgs.matchEndArgs) {
                         startNewSet(startingPlayer);
                     } else {
                         var matchEndedCallback = function () {
-                            emit('match.ended', setEndArgs.matchEndArgs);
+                            emitMatchEvent('match.ended', setEndArgs.matchEndArgs);
                         };
                         setTimeout(matchEndedCallback, 500);
                     }
@@ -141,6 +147,8 @@
                 player1.setsWon = 0;
                 player2.setsWon = 0;
                 
+                player1.socket.emit('match.joined', self);
+                player2.socket.emit('match.joined', self);
                 player1.socket.emit('opponent.joined', player2.user);
                 player2.socket.emit('opponent.joined', player1.user);
                 
