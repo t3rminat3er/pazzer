@@ -139,6 +139,9 @@
         };
         
         this.playerGaveUp = function (user) {
+            if (isOver) {
+                return;
+            }
             isOver = true;
             var foldingPlayer = player1.user.id === user.id ? player1 : player2;
             foldingPlayer.gaveUp = true;

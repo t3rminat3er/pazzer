@@ -85,6 +85,11 @@
                     emit('set.ended', setEndArgs);
                     if (!setEndArgs.matchEndArgs) {
                         startNewSet(startingPlayer);
+                    } else {
+                        var matchEndedCallback = function() {
+                            emit('match.ended', setEndArgs.matchEndArgs);
+                        };
+                        setTimeout(matchEndedCallback, 500);
                     }
                 };
                 setTimeout(cb, 100);
@@ -198,6 +203,7 @@ Player.prototype.reset = function () {
     this.setTurn(false);
     this.total = 0;
     this.openCards = [];
+    this.gaveUp = false;
 }
 
 module.exports = Match;

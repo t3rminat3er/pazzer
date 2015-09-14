@@ -25,12 +25,26 @@
         this.set('message', message);
     },
 
-    showSetEnded: function(setEndedArgs) {
+    showSetEnded: function (setEndedArgs) {
         this.send('openModal', 'match.setEnded');
         this.set('lastSetArgs', setEndedArgs);
     },
 
     actions: {
+        closeModal: function () {
+            if (this.lastSetArgs) {
+                var matchEndArgs = this.lastSetArgs.matchEndArgs;
+                if (matchEndArgs) {
+                    var self = this;
+                    this.set('lastSetArgs', null);
+                    setTimeout(function () {
+                        self.showMessage(matchEndArgs.reason);
+                        history.back();
+                    }, 100);
+                }
+            }
+            return true;
+        },
         playHandCard: function (card) {
             if (!this.player.turn) {
                 alert("Du bist nicht an der Reihe!");
@@ -61,7 +75,7 @@
             console.log('matchController.js hold', arguments, this);
             this.player.socket.emit('hold');
         },
-        giveUp: function() {
+        giveUp: function () {
             this.player.socket.emit('giveUp');
         }
     },
@@ -78,10 +92,10 @@
             this.setPlayer('opponent', user);
         },
 
-        'match.ended': function (args) {
-            this.showMessage(args.reason);
-            history.back();
-        },
+        //'match.ended': function (args) {
+        //    this.showMessage(args.reason);
+        //    history.back();
+        //},
 
         'set.ended': function (args) {
             console.log('set.ended ', arguments);
