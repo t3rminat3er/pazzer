@@ -197,7 +197,7 @@
         <div class="inGameBox">
             <div class="playerInformationsBox">
                 <div class="playerInformations" id="player2Informations">
-                    <span class="playerName" id="player2Name">{{opponent.user.name}} {{opponent.user.id}}</span>
+                    <span class="playerName" id="player2Name">{{opponent.user.name}}</span>
                     <br /><br />
                     <div class="playerCharacter" id="player2Character"><img src="img/characters/chewbaccaDog.png" width="100%" /></div>
                     <span class="currentPoints" id="player2CurrentPoints">{{opponent.total}}</span>
@@ -211,7 +211,7 @@
                     <h2>HOLDING</h2>
                     {{/if}}
                     <div class="playerCharacter" id="player1Character"><img src="img/characters/stormtrooper.png" width="100%" /></div>
-                    <span class="playerName" id="player1Name">{{player.user.name}} {{player.user.id}}</span>
+                    <span class="playerName" id="player1Name">{{player.user.name}}</span>
                 </div>
             </div>
             <div {{bind-attr class=":player2HandCardsBox opponent.turn::disabled"}}>
