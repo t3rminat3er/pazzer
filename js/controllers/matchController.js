@@ -5,6 +5,7 @@
     player: {},
     match: {},
     message: "",
+    lastSetArgs: {},
 
     setPlayer: function (playerName, user) {
         this.set(playerName, App.Player.create({
@@ -22,6 +23,11 @@
     showMessage: function (message) {
         this.send('openModal', 'match.message');
         this.set('message', message);
+    },
+
+    showSetEnded: function(setEndedArgs) {
+        this.send('openModal', 'match.setEnded');
+        this.set('lastSetArgs', setEndedArgs);
     },
 
     actions: {
@@ -80,9 +86,17 @@
                 var winner = this.player.user.id === args.winner.id ? this.player : this.opponent;
                 winner.get('setsWon').pushObject({});
             }
+            if (args.set.player1.id === this.player.user.id) {
+                args.set.player = args.set.player1;
+                args.set.opponent = args.set.player2;
+            } else {
+                args.set.player = args.set.player2;
+                args.set.opponent = args.set.player1;
+            }
+
             this.resetPlayer(this.player);
             this.resetPlayer(this.opponent);
-            this.showMessage(args.reason);
+            this.showSetEnded(args);
         }
     }
 });

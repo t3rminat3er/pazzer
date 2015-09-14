@@ -27,7 +27,6 @@ body {
     -ms-transform: translate(-50%, -50%);
     -o-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
-    width: 300px;
     background-color: #fff;
     padding: 1em;
 }
@@ -204,6 +203,9 @@ body {
     color: darkblue;
 }
 
+.set-end-modal {
+    width: auto;
+}
 
 
 .player2HandCardsBox {
@@ -226,6 +228,7 @@ body {
     width: 100%;
     margin-top: 1rem;
     margin-left: 1rem;
+    overflow: auto;
 }
 
     .playerPlayedCards > * {

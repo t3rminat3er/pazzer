@@ -99,6 +99,34 @@
         {{/modal-dialog}}
     </script>
 
+    <script type="text/x-handlebars" data-template-name="match/setEnded">
+        {{#modal-dialog action="closeModal"}}
+        {{#if lastSetArgs.winner}}
+        <h1>{{lastSetArgs.winner.name}} WINS</h1>
+        {{/if}}
+        <h2>{{lastSetArgs.reason}}</h2>
+        <div>
+            <p>
+                <h3>{{lastSetArgs.set.opponent.name}} TOTAL: {{lastSetArgs.set.opponent.total}}</h3>
+            </p>
+            <div class="playerPlayedCards">
+                {{#each lastSetArgs.set.opponent.openCards as |card|}}
+                <div class="card card-{{card.name}}" id="player2PlayedCard1"></div>
+                {{/each}}
+            </div>
+            <p>
+                <h3>{{lastSetArgs.set.player.name}} TOTAL: {{lastSetArgs.set.player.total}}</h3>
+            </p>
+            <div class="playerPlayedCards">
+                {{#each lastSetArgs.set.player.openCards as |card|}}
+                <div class="card card-{{card.name}}" id="player2PlayedCard1"></div>
+                {{/each}}
+            </div>
+        </div>
+
+        {{/modal-dialog}}
+    </script>
+
     <!-- MATCHES-->
     <script type="text/x-handlebars" data-template-name="matches">
         <ul id="matches">
@@ -124,7 +152,7 @@
     </script>
 
     <!--SIDE DECK EDITOR-->
-<script type="text/x-handlebars" data-template-name="sideDeck">
+    <script type="text/x-handlebars" data-template-name="sideDeck">
         <div class="deckeditorBox">
             <!--<button class="deckeditorButton" id="buttonMyCollection">My Collection</button>
             <button class="deckeditorButton" id="buttonUnlockableCards">Unlockable Cards</button>-->
@@ -137,7 +165,7 @@
                 </div>
                 <button class="deckeditorButton" {{action 'save'}} id="save">SAVE</button><br />
                 {{#if unsaved}}
-                    <h4>NICHT GESPEICHERT</h4>
+                <h4>NICHT GESPEICHERT</h4>
                 {{/if}}
             </div>
             <div class="cardOverviewBox">
