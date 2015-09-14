@@ -15,28 +15,39 @@
         match.onPlayerJoined(new Player(this));
         openMatches.push(match);
         socketServer.io.emit('matchOpened', match);
-
-        match.on('player.left', function(match) {
-            openMatches.push(match);
-            socketServer.io.emit('matchOpened', match);
+        
+        match.on('player.left', function (match) {
+            if (match.hasPlayers()) {
+                openMatches.push(match);
+                socketServer.io.emit('matchOpened', match);
+            } else {
+                removeMatch(match.id);
+            }
         });
     },
 
-    joinMatch = function (matchId) {
+    removeMatch = function (matchId) {
         var match;
         for (var i = 0; i < openMatches.length; i++) {
             match = openMatches[i];
             if (match.id === matchId) {
                 // remove - match is no longer open
-                match.onPlayerJoined(new Player(this));
-
-                socketServer.io.emit('matchClosed', match);
                 openMatches.splice(i, 1);
-                return;
+                socketServer.io.emit('matchClosed', match);
+                return match;
             }
         }
-        console.warn('no open match with id: ', matchId);
-        this.emit('alert', util.format('Kein Spiel mit der angegebenen ID %s gefunden.', matchId));
+        return null;
+    },
+
+    joinMatch = function (matchId) {
+        var match = removeMatch(matchId);
+        if (match) {
+            match.onPlayerJoined(new Player(this));
+        } else {
+            console.warn('no open match with id: ', matchId);
+            this.emit('alert', util.format('Kein Spiel mit der angegebenen ID %s gefunden.', matchId));
+        }
         return;
     };
 

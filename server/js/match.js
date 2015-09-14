@@ -21,8 +21,14 @@
             },
 
             onWantRematch = function (player, wantsRematch) {
+                if (!player) {
+                    return;
+                }
                 player.wantsRematch = wantsRematch;
                 var otherPlayer = player.user.id === player1.user.id ? player2 : player1;
+                if (!otherPlayer) {
+                    return;
+                }
                 if (otherPlayer.wantsRematch && wantsRematch) {
                     startRematch();
                 } else {
@@ -59,10 +65,12 @@
                 attachSocketListener('match.player.left', function () {
                     var player = getPlayerFromSocket(this);
                     onWantRematch(player, false);
-
+                    
                     var otherPlayer = player.user.id === player1.user.id ? player2 : player1;
-                    otherPlayer.socket.emit('opponent.left');
-
+                    if (otherPlayer) {
+                        otherPlayer.socket.emit('opponent.left');
+                        }
+                    
                     if (player === player1) {
                         player1 = null;
                     } else {
@@ -116,7 +124,7 @@
                     // on a tie the player who didn't start the last set starts
                     startingPlayer = player1.user.id === currentSet.startingPlayer.user.id ? player2 : player1;
                 }
-
+                
                 
                 var cb = function () {
                     emitMatchEvent('set.ended', setEndArgs);
@@ -155,7 +163,10 @@
                 var startingPlayer = Math.random() < 0.5 ? player1 : player2;
                 startNewSet(startingPlayer);
             };
-        
+
+        this.hasPlayers = function() {
+            return player1 || player2;
+        };
         
         this.emitPublicPlayerAction = function (player, event, content) {
             player.emitEvent(event, content, player1.socket);
@@ -163,7 +174,7 @@
         };
         
         this.onPlayerJoined = function (player) {
-            if(player1 && player2) {
+            if (player1 && player2) {
                 player.socket.emit('alert', "This match is full");
                 return;
             }
@@ -179,7 +190,7 @@
                 // let's go
                 startMatch();
                 attachSocketListeners();
-            } 
+            }
         };
     };
 
